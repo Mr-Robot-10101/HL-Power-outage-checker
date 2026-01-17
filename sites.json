@@ -1,0 +1,181 @@
+{
+  "claremont": {
+    "site": "Claremont",
+    "customer": "Christ Church Grammar",
+    "address": "Claremont WA 6010, Australia",
+    "provider": "Western Power",
+    "url": "https://www.westernpower.com.au/outages/",
+    "search": { "by": "id", "value": "react-select-outage-map-outage-search-input" }
+  },
+
+  "shepparton": {
+    "site": "Shepparton",
+    "customer": "Goulburn Valley Grammar School",
+    "address": "MCF7+7M Shepparton, Victoria, Australia",
+    "provider": "Powercor",
+    "url": "https://www.powercor.com.au/power-outages-and-emergencies/live-outage-map/",
+    "search": { "by": "css", "value": "input[name='postcode']" }
+  },
+
+  "knoxfield": {
+    "site": "Knoxfield",
+    "customer": "Karndean Flooring",
+    "address": "36WP+VM Knoxfield, Victoria, Australia",
+    "provider": "United Energy",
+    "url": "https://www.unitedenergy.com.au/outage-map/",
+    "search": { "by": "id", "value": "react-select-outage-map-outage-search-input" }
+  },
+
+  "glen iris": {
+    "site": "Glen Iris",
+    "customer": "Korowa Anglican Girls School",
+    "address": "43Q3+JM Glen Iris, Victoria, Australia",
+    "provider": "United Energy",
+    "url": "https://www.unitedenergy.com.au/outage-map/",
+    "search": { "by": "id", "value": "react-select-outage-map-outage-search-input" }
+  },
+
+  "brisbane": {
+    "site": "Brisbane",
+    "customer": "Mitsubishi Developments",
+    "address": "Adelaide Street, Brisbane City, Brisbane, Queensland, 4000, AUS",
+    "provider": "Energex",
+    "url": "https://www.energex.com.au/outages/outage-finder/outage-finder-map/",
+    "search": { "by": "xpath", "value": "//input[@placeholder='Enter street, suburb or postcode']" }
+  },
+
+  "broadmeadows": {
+    "site": "Broadmeadows",
+    "customer": "Penola",
+    "address": "8W69+FQ Broadmeadows, Victoria, Australia",
+    "provider": "Jemena",
+    "url": "https://poweroutages.jemena.com.au/",
+    "search": { "by": "id", "value": "react-select-outage-map-outage-search-input" }
+  },
+
+  "kilsyth": {
+    "site": "Kilsyth",
+    "customer": "Prebuilt",
+    "address": "Lade Ave, Kilsyth VIC, Australia",
+    "provider": "AusNet",
+    "url": "https://www.outagetracker.com.au/",
+    "search": { "by": "id", "value": "react-select-outage-map-outage-search-input" }
+  },
+
+  "hastings": {
+    "site": "Hastings",
+    "customer": "The Bays Aged Care",
+    "address": "M5WR+J4 Hastings, Victoria, Australia",
+    "provider": "United Energy",
+    "url": "https://www.unitedenergy.com.au/outage-map/",
+    "search": { "by": "id", "value": "react-select-outage-map-outage-search-input" }
+  },
+
+  "mornington": {
+    "site": "Mornington",
+    "customer": "The Bays Aged Care",
+    "address": "Q2GR+FJ Mornington, Victoria, Australia",
+    "provider": "United Energy",
+    "url": "https://www.unitedenergy.com.au/outage-map/",
+    "search": { "by": "id", "value": "react-select-outage-map-outage-search-input" }
+  },
+
+  "balwyn": {
+    "site": "Balwyn",
+    "customer": "Trinity Care",
+    "address": "53R8+48 Balwyn, Victoria, Australia",
+    "provider": "Powercor",
+    "url": "https://www.powercor.com.au/power-outages-and-emergencies/live-outage-map/",
+    "search": { "by": "css", "value": "input[name='postcode']" }
+  },
+
+  "greensborough": {
+    "site": "Greensborough",
+    "customer": "Trinity Care",
+    "address": "Elonera Avenue, Greensborough VIC, Australia",
+    "provider": "AusNet",
+    "url": "https://www.outagetracker.com.au/",
+    "search": { "by": "id", "value": "react-select-outage-map-outage-search-input" }
+  },
+
+  "elsternwick": {
+    "site": "Elsternwick",
+    "customer": "Wesley College",
+    "address": "4265+3P Elsternwick, Victoria, Australia",
+    "provider": "Powercor",
+    "url": "https://www.powercor.com.au/power-outages-and-emergencies/live-outage-map/",
+    "search": { "by": "css", "value": "input[name='postcode']" }
+  },
+
+  "glen waverley": {
+    "site": "Glen Waverley",
+    "customer": "Wesley College",
+    "address": "45G4+26 Glen Waverley, Victoria, Australia",
+    "provider": "United Energy",
+    "url": "https://www.unitedenergy.com.au/outage-map/",
+    "search": { "by": "id", "value": "react-select-outage-map-outage-search-input" }
+  },
+
+  "st kilda road": {
+    "site": "St Kilda Road",
+    "customer": "Wesley College",
+    "address": "4XWM+H5 Melbourne, Victoria, Australia",
+    "provider": "Powercor",
+    "url": "https://www.powercor.com.au/power-outages-and-emergencies/live-outage-map/",
+    "search": { "by": "css", "value": "input[name='postcode']" }
+  },
+
+  "rrc": {
+    "site": "RRC",
+    "customer": "Wesley College",
+    "address": "5X5J+9V South Yarra, Victoria, Australia",
+    "provider": "Powercor",
+    "url": "https://www.powercor.com.au/power-outages-and-emergencies/live-outage-map/",
+    "search": { "by": "css", "value": "input[name='postcode']" }
+  },
+
+  "clunes": {
+    "site": "Clunes",
+    "customer": "Wesley College",
+    "address": "PQ3P+M5 Clunes, Victoria, Australia",
+    "provider": "Powercor",
+    "url": "https://www.powercor.com.au/power-outages-and-emergencies/live-outage-map/",
+    "search": { "by": "css", "value": "input[name='postcode']" }
+  },
+
+  "chum creek": {
+    "site": "Chum Creek",
+    "customer": "Wesley College",
+    "address": "Old Chum Creek Road, Chum Creek VIC, Australia",
+    "provider": "AusNet",
+    "url": "https://www.outagetracker.com.au/",
+    "search": { "by": "id", "value": "react-select-outage-map-outage-search-input" }
+  },
+
+  "mallana": {
+    "site": "Mallana - This site in power outage site says [The location/INCD/NMI you have entered could not be found within AusNet's electricity distribution network.]",
+    "customer": "Wesley College",
+    "address": "Newlands Arm VIC, Australia",
+    "provider": "AusNet",
+    "url": "https://www.outagetracker.com.au/",
+    "search": { "by": "id", "value": "react-select-outage-map-outage-search-input" }
+  },
+
+  "lochend": {
+    "site": "Lochend",
+    "customer": "Wesley College",
+    "address": "MCV7+5W Cape Bridgewater, Victoria, Australia",
+    "provider": "Powercor",
+    "url": "https://www.powercor.com.au/power-outages-and-emergencies/live-outage-map/",
+    "search": { "by": "css", "value": "input[name='postcode']" }
+  },
+
+  "indooroopilly": {
+    "site": "Indooroopilly",
+    "customer": "St Peters Lutheran College",
+    "address": "Lohe Street, Indooroopilly, Brisbane, Queensland, 4068, AUS",
+    "provider": "Energex",
+    "url": "https://www.energex.com.au/outages/outage-finder/outage-finder-map/",
+    "search": { "by": "xpath", "value": "//input[@placeholder='Enter street, suburb or postcode']" }
+  }
+}
