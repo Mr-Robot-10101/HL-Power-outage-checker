@@ -54,7 +54,7 @@ st.markdown(
         border-radius: 8px !important;
         width: 100% !important;
         margin-bottom: 8px !important;
-        padding: 12px 0 !important;
+        padding: 15px 5 !important;
         
         /* Text Alignment - Center Everything */
         text-align: center !important;
