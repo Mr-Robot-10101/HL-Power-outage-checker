@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (Floating Clouds Animation)
+# 2. 🎨 CSS Styles (MORE VISIBLE FLOATING CLOUDS)
 # -------------------------------------------------
 st.markdown(
     """
@@ -36,63 +36,71 @@ st.markdown(
         width: 100vw;
         height: 100vh;
         z-index: -1;
-        /* Night Sky Gradient */
-        background: linear-gradient(to bottom, #020617 0%, #0f172a 60%, #1e293b 100%);
+        /* Night Sky Gradient - Slightly brighter near horizon for contrast */
+        background: linear-gradient(to bottom, #020617 0%, #0f172a 50%, #1e293b 100%);
         overflow: hidden;
     }
 
-    /* --- CLOUD ANIMATION CSS --- */
+    /* --- MODIFIED CLOUD ANIMATION CSS (More Visible) --- */
     
-    /* Cloud Shape Base */
+    /* Cloud Shape Base - Increased Visibility */
     .cloud {
         position: absolute;
-        background: rgba(255, 255, 255, 0.08); /* Very transparent white */
+        /* Increased white opacity (from 0.08 to 0.15) */
+        background: rgba(255, 255, 255, 0.15); 
         border-radius: 100px;
-        filter: blur(30px); /* Make it look soft/misty */
+        /* Reduced blur slightly (from 30px to 20px) for better definition */
+        filter: blur(20px); 
         z-index: 0;
-        opacity: 0.8;
+        /* Increased overall opacity */
+        opacity: 0.9;
     }
 
-    /* Cloud Layer 1 (Top, Slow) */
+    /* Cloud Layer 1 (Top, Slow, Long) */
     .c1 {
-        width: 500px; height: 120px;
-        top: 10%;
-        left: -500px; /* Start off-screen */
-        animation: drift 45s linear infinite;
+        width: 600px; height: 140px;
+        top: 5%;
+        left: -600px;
+        animation: drift 50s linear infinite;
     }
 
-    /* Cloud Layer 2 (Middle, Medium) */
+    /* Cloud Layer 2 (Middle, Big chunk) */
     .c2 {
-        width: 700px; height: 180px;
-        top: 40%;
-        left: -700px;
-        animation: drift 35s linear infinite;
-        animation-delay: -15s; /* Start mid-way */
-        background: rgba(255, 255, 255, 0.05);
+        width: 800px; height: 200px;
+        top: 35%;
+        left: -800px;
+        animation: drift 40s linear infinite;
+        animation-delay: -10s;
+        /* A bit brighter than base */
+        background: rgba(255, 255, 255, 0.18);
     }
 
-    /* Cloud Layer 3 (Bottom, Fast) */
+    /* Cloud Layer 3 (Bottom, Fast, Brighter puff) */
     .c3 {
-        width: 400px; height: 100px;
-        top: 70%;
-        left: -400px;
-        animation: drift 25s linear infinite;
+        width: 450px; height: 120px;
+        top: 65%;
+        left: -450px;
+        animation: drift 28s linear infinite;
         animation-delay: -5s;
+        /* Brightest cloud chunk */
+        background: rgba(255, 255, 255, 0.22);
+        filter: blur(15px); /* Less blurred */
     }
     
-    /* Cloud Layer 4 (Extra detail) */
+    /* Cloud Layer 4 (Background Detail) */
     .c4 {
-        width: 300px; height: 80px;
-        top: 20%;
-        left: -300px;
-        animation: drift 50s linear infinite;
+        width: 350px; height: 90px;
+        top: 25%;
+        left: -350px;
+        animation: drift 55s linear infinite;
         animation-delay: -25s;
-        filter: blur(40px);
+        filter: blur(25px); /* More blurred for depth */
+        opacity: 0.7;
     }
 
     @keyframes drift {
         0% { transform: translateX(0); }
-        100% { transform: translateX(120vw); } /* Move across screen */
+        100% { transform: translateX(130vw); }
     }
 
     /* --- SIDEBAR STYLING --- */
