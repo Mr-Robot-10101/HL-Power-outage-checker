@@ -2,7 +2,7 @@ import json
 import streamlit as st
 
 # -------------------------------------------------
-# 1. Page Config (පිටුවේ මූලික සැකසුම්)
+# 1. Page Config
 # -------------------------------------------------
 st.set_page_config(
     page_title="Power Check",
@@ -12,12 +12,12 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (සම්පූර්ණ Design එක)
+# 2. 🎨 CSS Styles (Solid Sidebar Buttons & Clean UI)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
-    /* Google Font Import */
+    /* Google Font */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
     
     html, body, [class*="css"] {
@@ -30,14 +30,13 @@ st.markdown(
         color: white;
     }
 
-    /* --- SIDEBAR STYLING (1st Image Look) --- */
+    /* --- SIDEBAR STYLING --- */
     
     section[data-testid="stSidebar"] {
         background-color: #0b0f19;
         border-right: 1px solid rgba(255,255,255,0.05);
     }
 
-    /* Sidebar Header Text */
     section[data-testid="stSidebar"] h3 {
         color: #f1f5f9;
         font-size: 1.1rem;
@@ -48,27 +47,23 @@ st.markdown(
     section[data-testid="stSidebar"] button {
         background-color: rgba(30, 41, 59, 0.8) !important; /* Solid Dark Background */
         color: #cbd5e1 !important;
-        
-        /* Box Styling */
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px !important;
-        width: 100% !important;
-        margin-bottom: 8px !important;
-        padding: 12px 0 !important;
+        margin-bottom: 4px !important;
         
-        /* Text Alignment - Center Everything */
+        /* Force Centering */
         text-align: center !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
         
-        /* Font Styling */
+        /* Font Styles */
         font-weight: 500 !important;
         font-size: 0.95rem !important;
         transition: all 0.2s ease-in-out !important;
     }
 
-    /* Ensure text inside button is centered */
+    /* Fix inner paragraph alignment */
     section[data-testid="stSidebar"] button p {
         text-align: center !important;
         width: 100%;
@@ -77,7 +72,7 @@ st.markdown(
 
     /* Hover Effect */
     section[data-testid="stSidebar"] button:hover {
-        background-color: rgba(59, 130, 246, 0.2) !important; /* Blue tint */
+        background-color: rgba(59, 130, 246, 0.2) !important;
         border-color: #3b82f6 !important;
         color: white !important;
         transform: translateY(-1px);
@@ -87,11 +82,11 @@ st.markdown(
     section[data-testid="stSidebar"] button:focus {
         border-color: #60a5fa !important;
         background-color: rgba(37, 99, 235, 0.3) !important;
+        color: white !important;
     }
 
     /* --- MAIN CONTENT STYLING --- */
     
-    /* Input Field */
     .stTextInput input {
         background-color: rgba(255,255,255,0.08) !important;
         color: white !important;
@@ -117,7 +112,6 @@ st.markdown(
         box-shadow: 0 4px 25px rgba(0,0,0,0.4);
     }
 
-    /* Status Badge */
     .status-badge {
         display: inline-block;
         background-color: rgba(34, 197, 94, 0.15);
@@ -130,7 +124,6 @@ st.markdown(
         margin-bottom: 15px;
     }
 
-    /* Site Name Typography */
     .site-name {
         font-size: 2.5rem;
         font-weight: 800;
@@ -140,7 +133,6 @@ st.markdown(
         -webkit-text-fill-color: transparent;
     }
 
-    /* Remove Footer */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     </style>
@@ -149,7 +141,7 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# 3. Load Data & State
+# 3. Load Data
 # -------------------------------------------------
 try:
     with open("sites.json", "r", encoding="utf-8") as f:
@@ -158,29 +150,32 @@ except FileNotFoundError:
     SITES = {}
     st.error("⚠️ sites.json file not found!")
 
-# Session State
-if "selected_loc" not in st.session_state:
-    st.session_state.selected_loc = ""
+locations_list = list(SITES.keys())
 
 # -------------------------------------------------
-# 4. SIDEBAR (Buttons)
+# 4. Session State
+# -------------------------------------------------
+if "selected_location" not in st.session_state:
+    st.session_state.selected_location = ""
+
+# -------------------------------------------------
+# 5. Sidebar (Using Old Code Logic + New Styles)
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("### 🗺️ Locations")
-    st.markdown("<div style='margin-bottom:15px; color:#64748b; font-size:0.9rem;'>Quick Select</div>", unsafe_allow_html=True)
+    st.caption("Quick Select")
     
-    # Loop to create buttons
-    for loc in SITES.keys():
-        if st.button(loc.title(), key=f"btn_{loc}"):
-            st.session_state.selected_loc = loc
+    # මෙන්න ඔයාගේ Old Code එකේ Logic එක
+    for loc in locations_list:
+        if st.button(loc.title(), use_container_width=True, key=f"loc_{loc}"):
+            st.session_state.selected_location = loc
             st.rerun()
 
 # -------------------------------------------------
-# 5. MAIN CONTENT
+# 6. Main Content
 # -------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Main Title
 st.markdown(
     """
     <div style="text-align:center; margin-bottom: 40px;">
@@ -196,19 +191,21 @@ st.markdown(
 # Search Input (Full Width - No Columns)
 search_query = st.text_input(
     "Search Location", 
-    value=st.session_state.selected_loc,
+    value=st.session_state.selected_location, 
     placeholder="Select from sidebar or type...", 
     label_visibility="collapsed"
 )
 
-# Results Display
+# -------------------------------------------------
+# 7. Results Display
+# -------------------------------------------------
 if search_query:
     location_key = search_query.lower().strip()
     
     if location_key in SITES:
         site = SITES[location_key]
         
-        st.write("") # Spacer
+        st.write("") 
 
         # --- Info Card ---
         st.markdown(
@@ -224,7 +221,7 @@ if search_query:
             unsafe_allow_html=True
         )
 
-        # --- Address ---
+        # --- Address (Native Copy Button) ---
         st.caption("📍 SITE ADDRESS")
         st.code(site.get("address", "Address unavailable"), language="text")
 
@@ -240,7 +237,6 @@ if search_query:
         )
     
     else:
-        # Error Message
         st.markdown(
             """
             <div style="
