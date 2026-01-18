@@ -1,7 +1,7 @@
 import json
 import streamlit as st
 import streamlit.components.v1 as components
-from selenium_checker import check_power_status
+from selenium_checker import check_power_status  # (kept if needed later)
 
 # -------------------------------------------------
 # Page config
@@ -14,50 +14,85 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 🎨 Custom Brand Theme (CSS)
+# 🎨 Custom Brand Theme + Provider Buttons (CSS)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
+    /* App background */
     .stApp {
         background-color: #0f172a;
         color: #e5e7eb;
     }
 
+    /* Sidebar */
     section[data-testid="stSidebar"] {
         background-color: #020617;
     }
 
     section[data-testid="stSidebar"] button {
-        background-color: #020617;
-        color: #e5e7eb;
-        border: 1px solid #1f2937;
+        background-color: #2563eb;
+        color: white;
+        border: none;
         border-radius: 10px;
         padding: 10px;
         font-weight: 500;
     }
 
     section[data-testid="stSidebar"] button:hover {
-        background-color: #1f6feb;
-        color: white;
-        border-color: #1f6feb;
+        background-color: #1d4ed8;
     }
 
-    .stButton > button {
-        background: linear-gradient(90deg, #1f6feb, #2563eb);
-        color: white;
-        border-radius: 12px;
-        border: none;
-        padding: 10px 16px;
-        font-weight: 600;
-    }
-
-    .stButton > button:hover {
-        background: linear-gradient(90deg, #2563eb, #1d4ed8);
-    }
-
+    /* Alerts */
     .stAlert {
         border-radius: 14px;
+    }
+
+    /* ---------------- Provider button styles ---------------- */
+    .provider-link-btn a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        color: #ffffff !important;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+        transition: all 0.25s ease;
+    }
+
+    /* Jemena - Green */
+    .provider-jemena a {
+        background: linear-gradient(90deg, #16a34a, #22c55e);
+    }
+    .provider-jemena a:hover {
+        box-shadow: 0 8px 22px rgba(34,197,94,0.55);
+        transform: translateY(-1px);
+    }
+
+    /* Powercor - Blue */
+    .provider-powercor a {
+        background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+    .provider-powercor a:hover {
+        box-shadow: 0 8px 22px rgba(37,99,235,0.55);
+        transform: translateY(-1px);
+    }
+
+    /* AusNet - Purple */
+    .provider-ausnet a {
+        background: linear-gradient(90deg, #7c3aed, #9333ea);
+    }
+    .provider-ausnet a:hover {
+        box-shadow: 0 8px 22px rgba(147,51,234,0.55);
+        transform: translateY(-1px);
+    }
+
+    /* Default */
+    .provider-default a {
+        background: linear-gradient(90deg, #1f6feb, #2563eb);
     }
     </style>
     """,
@@ -70,9 +105,6 @@ st.markdown(
 with open("sites.json", "r", encoding="utf-8") as f:
     SITES = json.load(f)
 
-# -------------------------------------------------
-# Locations list (from DB keys)
-# -------------------------------------------------
 locations_list = list(SITES.keys())
 
 # -------------------------------------------------
@@ -117,7 +149,7 @@ location = st.text_input(
 )
 
 # -------------------------------------------------
-# Main logic
+# Main view
 # -------------------------------------------------
 if location and location.lower() in SITES:
     site = SITES[location.lower()]
@@ -129,7 +161,7 @@ if location and location.lower() in SITES:
     )
 
     # -------------------------------------------------
-    # Address (WHITE text) + HTML Copy button (NO RERUN)
+    # Address (WHITE) + HTML Copy button (NO rerun)
     # -------------------------------------------------
     components.html(
         f"""
@@ -137,7 +169,7 @@ if location and location.lower() in SITES:
             display:flex;
             align-items:center;
             gap:12px;
-            margin: 10px 0 6px 0;
+            margin:10px 0;
         ">
             <div style="
                 font-weight:600;
@@ -175,30 +207,30 @@ if location and location.lower() in SITES:
     # -------------------------------------------------
     st.write(f"**Provider:** {site['provider']}")
 
-    st.link_button(
-        "🔗 Open Provider Outage Page",
-        site["url"]
+    # Provider-based color class
+    provider_name = site["provider"].lower()
+    if "jemena" in provider_name:
+        provider_class = "provider-jemena"
+    elif "powercor" in provider_name:
+        provider_class = "provider-powercor"
+    elif "ausnet" in provider_name:
+        provider_class = "provider-ausnet"
+    else:
+        provider_class = "provider-default"
+
+    # -------------------------------------------------
+    # Styled Provider Outage Page button
+    # -------------------------------------------------
+    st.markdown(
+        f"""
+        <div class="provider-link-btn {provider_class}">
+            <a href="{site['url']}" target="_blank">
+                🔗 Open Provider Outage Page
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
-    # -------------------------------------------------
-    # Auto-check power status
-    # -------------------------------------------------
-    if st.button("🔍 Auto-Check Power Status", use_container_width=True):
-        with st.spinner("Checking live outage map..."):
-            result = check_power_status(
-                site["url"],
-                address,
-                site.get("search"),
-                site.get("provider", "")
-            )
-
-        if not result["found"]:
-            st.warning("⚠️ Could not auto-detect location. Verify manually.")
-        else:
-            if result["status"] in ["OUTAGE", "OUTAGES"]:
-                st.error(f"⚡ {result['status']} ({result['type']})")
-            else:
-                st.success("✅ No confirmed outage detected")
-else:
-    if location:
-        st.error("❌ Location not found in database")
+elif location:
+    st.error("❌ Location not found in database")
