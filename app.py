@@ -1,6 +1,5 @@
 import json
 import streamlit as st
-import streamlit.components.v1 as components
 
 # -------------------------------------------------
 # 1. Page Config
@@ -13,7 +12,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles
+# 2. 🎨 CSS Styles & BACKGROUND ANIMATION
 # -------------------------------------------------
 st.markdown(
     """
@@ -22,18 +21,51 @@ st.markdown(
     
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
+        height: 100%;
+        margin: 0;
+        background-color: #020617;
+        overflow: hidden;
     }
 
-    /* Animation එක පෙනෙන්න නම් Main Background එක Transparent විය යුතුයි */
+    /* --- BACKGROUND ANIMATION (CSS ONLY - Reliable) --- */
     .stApp {
-        background: transparent !important;
+        /* ගැඹුරු නිල්/දම් පැහැති Gradient එකක් */
+        background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e1b4b 100%);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite; /* සෙමින් චලනය වන Animation එක */
+        position: relative;
+        z-index: 0;
     }
 
-    /* --- SIDEBAR STYLING --- */
+    /* Gradient චලනය */
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* සියුම් තිත් රටාවක් (Dot Pattern) එකතු කිරීම */
+    .stApp::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(rgba(37, 99, 235, 0.1) 1px, transparent 1px),
+            radial-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px);
+        background-size: 30px 30px, 15px 15px;
+        background-position: 0 0, 15px 15px;
+        z-index: -1;
+        opacity: 0.6;
+    }
+
+    /* --- SIDEBAR STYLING (Solid & Centered) --- */
     section[data-testid="stSidebar"] {
-        background-color: rgba(11, 15, 25, 0.85); /* Semi-transparent Dark */
+        background-color: rgba(11, 15, 25, 0.9);
         border-right: 1px solid rgba(255,255,255,0.05);
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(8px);
     }
 
     section[data-testid="stSidebar"] h3 {
@@ -43,9 +75,9 @@ st.markdown(
         padding-left: 5px;
     }
 
-    /* Sidebar Buttons - Solid Box & Centered Text (1st Image Style) */
+    /* Buttons Styling */
     section[data-testid="stSidebar"] button {
-        background-color: rgba(30, 41, 59, 0.95) !important; /* Solid Dark Color */
+        background-color: rgba(30, 41, 59, 0.95) !important; /* Solid Box */
         color: #cbd5e1 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px !important;
@@ -53,47 +85,34 @@ st.markdown(
         height: auto !important;
         padding: 12px 0 !important;
         
-        /* Centering Text */
+        /* Center Text */
         text-align: center !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
         
-        /* Typography */
         font-weight: 500 !important;
         font-size: 0.95rem !important;
         transition: all 0.2s ease-in-out !important;
     }
 
-    /* Fix inner text alignment */
     section[data-testid="stSidebar"] button p {
         text-align: center !important;
         width: 100%;
         margin: 0;
-        padding: 0;
     }
 
-    /* Hover Effect */
     section[data-testid="stSidebar"] button:hover {
-        background-color: rgba(59, 130, 246, 0.3) !important; /* Blue Tint */
+        background-color: rgba(59, 130, 246, 0.3) !important;
         border-color: #3b82f6 !important;
         color: white !important;
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
-    /* Active/Focus Effect */
-    section[data-testid="stSidebar"] button:focus {
-        border-color: #60a5fa !important;
-        background-color: rgba(37, 99, 235, 0.6) !important;
-        color: white !important;
-    }
-
-    /* --- MAIN CONTENT STYLING --- */
-    
-    /* Result Card (Glassmorphism) */
+    /* --- MAIN CARD STYLING --- */
     .result-header {
-        background: rgba(15, 23, 42, 0.75);
+        background: rgba(15, 23, 42, 0.8);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 16px;
         padding: 40px;
@@ -135,7 +154,7 @@ st.markdown(
     .welcome-box {
         margin-top: 40px;
         padding: 50px;
-        background: rgba(15, 23, 42, 0.6);
+        background: rgba(15, 23, 42, 0.7);
         border: 1px dashed rgba(255,255,255,0.2);
         backdrop-filter: blur(10px);
         border-radius: 16px;
@@ -151,7 +170,7 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# 3. Load Data & State
+# 3. Load Data
 # -------------------------------------------------
 try:
     with open("sites.json", "r", encoding="utf-8") as f:
@@ -159,10 +178,9 @@ try:
 except FileNotFoundError:
     SITES = {}
 
-# Locations List
 locations_list = list(SITES.keys())
 
-# Session State Initialization
+# Session State
 if "selected_location" not in st.session_state:
     st.session_state.selected_location = None
 
@@ -173,7 +191,6 @@ with st.sidebar:
     st.markdown("### 🗺️ Locations")
     st.caption("Quick Select")
     
-    # Create Buttons
     for loc in locations_list:
         if st.button(loc.title(), use_container_width=True, key=f"loc_{loc}"):
             st.session_state.selected_location = loc
@@ -184,7 +201,7 @@ with st.sidebar:
 # -------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Main Title (z-index 1 ensures it stays above background animation)
+# Title
 st.markdown(
     """
     <div style="text-align:center; margin-bottom: 30px; position: relative; z-index: 1;">
@@ -199,15 +216,14 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Display Logic ---
-
+# Display Logic
 if st.session_state.selected_location:
     location_key = st.session_state.selected_location.lower().strip()
     
     if location_key in SITES:
         site = SITES[location_key]
         
-        # --- Info Card ---
+        # Info Card
         st.markdown(
             f"""
             <div class="result-header">
@@ -221,11 +237,11 @@ if st.session_state.selected_location:
             unsafe_allow_html=True
         )
 
-        # --- Address (with Copy Button) ---
+        # Address
         st.caption("📍 SITE ADDRESS")
         st.code(site.get("address", "Address unavailable"), language="text")
 
-        # --- Provider Link Button ---
+        # Link Button
         st.write("") 
         provider_name = site['provider']
         
@@ -238,7 +254,7 @@ if st.session_state.selected_location:
     else:
         st.error("Error: Location data not found.")
 else:
-    # Welcome / Placeholder Message
+    # Welcome Box
     st.markdown(
         """
         <div class="welcome-box">
@@ -248,41 +264,3 @@ else:
         """,
         unsafe_allow_html=True
     )
-
-# -------------------------------------------------
-# 6. ✨ VANTA.JS BACKGROUND ANIMATION ✨
-# -------------------------------------------------
-# Using the specific CDN link you provided
-components.html(
-    """
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.rings.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Find the main Streamlit app container
-            var mainApp = window.parent.document.querySelector('.stApp');
-            
-            if (mainApp) {
-                // Remove existing background
-                mainApp.style.background = 'transparent';
-                
-                // Initialize Vanta Rings
-                VANTA.RINGS({
-                    el: mainApp,
-                    mouseControls: true,
-                    touchControls: true,
-                    gyroControls: false,
-                    minHeight: 200.00,
-                    minWidth: 200.00,
-                    scale: 1.00,
-                    scaleMobile: 1.00,
-                    backgroundColor: 0x020617, // Dark Background
-                    color: 0x2563eb            // Blue Rings
-                })
-            }
-        });
-    </script>
-    """,
-    height=0,
-    width=0
-)
