@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (SHARPER CLOUDS - LESS BLUR, 80% OPACITY)
+# 2. 🎨 CSS Styles (MORE REALISTIC WISPY CLOUDS)
 # -------------------------------------------------
 st.markdown(
     """
@@ -36,67 +36,78 @@ st.markdown(
         width: 100vw;
         height: 100vh;
         z-index: -1;
-        /* Night Sky Gradient */
+        /* Deep Night Sky Gradient */
         background: linear-gradient(to bottom, #020617 0%, #0f172a 50%, #1e293b 100%);
         overflow: hidden;
     }
 
-    /* --- SHARPER CLOUD ANIMATION CSS --- */
+    /* --- REALISTIC WISPY CLOUD CSS --- */
     
-    /* Cloud Shape Base - Reduced Blur & Fixed Opacity */
+    /* Cloud Base Style - Using Gradients for Realism */
     .cloud {
         position: absolute;
-        background: rgba(255, 255, 255, 0.2); /* Slightly brighter inner color */
-        border-radius: 100px;
-        /* --- MAIN CHANGES HERE --- */
-        filter: blur(8px); /* Blur එක 20px සිට 8px දක්වා අඩු කළා (Sharper) */
-        opacity: 0.8; /* Opacity එක 80% ලෙස සැකසුවා */
+        /* වෙනස්කම 1: Solid color වෙනුවට Radial Gradient භාවිතය.
+           මැද සුදු පැහැය වැඩි අතර, දාර වලට යද්දී විනිවිද පෙනේ. */
+        background: radial-gradient(closest-side at 50% 50%, rgba(255, 255, 255, 0.12), transparent);
+        /* හැඩය වඩාත් ස්වභාවික කිරීමට border-radius වෙනස් කිරීම */
+        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        /* තාත්වික බව සඳහා සුදුසු Blur ප්‍රමාණයක් */
+        filter: blur(20px);
+        opacity: 0.9;
         z-index: 0;
+        transform-origin: center;
     }
 
-    /* Cloud Layer 1 (Top, Slow, Long) */
+    /* Cloud Layer 1 (Top, Slow, Very Wispy) */
     .c1 {
-        width: 600px; height: 140px;
-        top: 5%;
-        left: -600px;
-        animation: drift 50s linear infinite;
-    }
-
-    /* Cloud Layer 2 (Middle, Big chunk) */
-    .c2 {
-        width: 800px; height: 200px;
-        top: 35%;
+        width: 800px; height: 250px;
+        top: -5%;
         left: -800px;
-        animation: drift 40s linear infinite;
-        animation-delay: -10s;
-        background: rgba(255, 255, 255, 0.22);
+        animation: drift 60s linear infinite;
+        opacity: 0.7;
+        filter: blur(30px); /* ඈතින් ඇති නිසා වැඩිපුර Blur */
     }
 
-    /* Cloud Layer 3 (Bottom, Fast, Brightest & Sharpest) */
+    /* Cloud Layer 2 (Middle, Main Body, Brighter) */
+    .c2 {
+        width: 900px; height: 300px;
+        top: 30%;
+        left: -900px;
+        animation: drift 45s linear infinite;
+        animation-delay: -15s;
+        /* මැද කොටස මදක් දීප්තිමත් */
+        background: radial-gradient(closest-side at 50% 50%, rgba(255, 255, 255, 0.18), transparent);
+        filter: blur(25px);
+    }
+
+    /* Cloud Layer 3 (Bottom, Fast, Thinner Mist) */
     .c3 {
-        width: 450px; height: 120px;
+        width: 600px; height: 180px;
         top: 65%;
-        left: -450px;
-        animation: drift 28s linear infinite;
+        left: -600px;
+        animation: drift 35s linear infinite;
         animation-delay: -5s;
-        background: rgba(255, 255, 255, 0.25);
-        filter: blur(5px); /* ඉතාමත් අඩු Blur එකක් (ඉතා පැහැදිලියි) */
+        opacity: 0.6;
+        filter: blur(15px);
+         /* වඩාත් දිගටි හැඩයක් */
+        transform: scaleY(0.7);
     }
     
-    /* Cloud Layer 4 (Background Detail - Slightly blurrier for depth) */
+    /* Cloud Layer 4 (Filler fog) */
     .c4 {
-        width: 350px; height: 90px;
-        top: 25%;
-        left: -350px;
+        width: 500px; height: 200px;
+        top: 20%;
+        left: -500px;
         animation: drift 55s linear infinite;
-        animation-delay: -25s;
-        filter: blur(12px); /* පසුබිම නිසා මදක් Blur වැඩියි */
-        opacity: 0.6;
+        animation-delay: -30s;
+        opacity: 0.5;
+        filter: blur(35px);
     }
 
     @keyframes drift {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(130vw); }
+        0% { transform: translateX(0) scale(1); }
+        50% { transform: translateX(70vw) scale(1.05); } /* මදක් විශාල වීම */
+        100% { transform: translateX(140vw) scale(1); }
     }
 
     /* --- SIDEBAR STYLING --- */
