@@ -12,52 +12,36 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (FIXED & SAFE)
+# 2. 🎨 CSS Styles (Electric Border Added)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
     
-    /* General Settings */
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
     }
 
-    /* Make Streamlit Transparent so our background shows through */
+    /* Transparent Background for Animation */
     .stApp {
         background: transparent !important;
     }
 
-    /* --- FIXED BACKGROUND LAYER --- */
-    /* මෙම කොටස මගින් පසුබිම වෙනම Layer එකක් ලෙස සකසයි */
+    /* --- BACKGROUND ANIMATION (Keep Flowing Energy) --- */
     #bg-animation {
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
-        z-index: -1; /* අනිත් සියල්ලටම වඩා පිටුපසින් */
-        background: linear-gradient(125deg, #020617 0%, #0f172a 40%, #1e1b4b 100%);
+        z-index: -1;
+        background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e1b4b 100%);
         background-size: 400% 400%;
-        animation: gradientMove 15s ease infinite;
-    }
-    
-    /* Add a subtle pattern overlay */
-    #bg-animation::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: 
-            radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-        background-size: 30px 30px;
-        pointer-events: none;
+        animation: gradientBG 15s ease infinite;
     }
 
-    @keyframes gradientMove {
+    @keyframes gradientBG {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
@@ -65,36 +49,34 @@ st.markdown(
 
     /* --- SIDEBAR STYLING --- */
     section[data-testid="stSidebar"] {
-        background-color: rgba(11, 15, 25, 0.85);
+        background-color: #0b0f19;
         border-right: 1px solid rgba(255,255,255,0.05);
-        backdrop-filter: blur(10px);
     }
-
+    
     section[data-testid="stSidebar"] h3 {
         color: #f1f5f9;
         font-size: 1.1rem;
-        margin-bottom: 15px;
-        padding-left: 5px;
+        font-weight: 600;
+        margin-bottom: 10px;
     }
 
-    /* Solid Sidebar Buttons */
+    /* Sidebar Buttons - Solid Box & Centered Text */
     section[data-testid="stSidebar"] button {
-        background-color: rgba(30, 41, 59, 0.9) !important;
-        color: #cbd5e1 !important;
+        background-color: #1e293b !important;
+        color: #e2e8f0 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px !important;
         margin-bottom: 8px !important;
         padding: 12px 0 !important;
         width: 100%;
-        
         text-align: center !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-        
         font-weight: 500 !important;
         font-size: 0.95rem !important;
         transition: all 0.2s ease-in-out !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
 
     section[data-testid="stSidebar"] button p {
@@ -104,33 +86,58 @@ st.markdown(
     }
 
     section[data-testid="stSidebar"] button:hover {
-        background-color: rgba(59, 130, 246, 0.3) !important;
+        background-color: #3b82f6 !important;
         border-color: #3b82f6 !important;
         color: white !important;
-        transform: translateY(-2px);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
 
-    /* --- MAIN CONTENT CARD --- */
+    section[data-testid="stSidebar"] button:focus {
+        background-color: #2563eb !important;
+        border-color: #60a5fa !important;
+        color: white !important;
+    }
+
+    /* --- ELECTRIC CARD STYLING --- */
     .result-header {
-        background: rgba(15, 23, 42, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
+        /* Darker glass background for contrast */
+        background: rgba(10, 15, 30, 0.85); 
+        border-radius: 20px;
         padding: 40px;
         text-align: center;
-        backdrop-filter: blur(15px);
+        backdrop-filter: blur(20px);
         margin-bottom: 20px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        animation: fadeIn 0.5s ease-out;
+
+        /* ✨ THE ELECTRIC BORDER EFFECT ✨ */
+        /* Base orange border */
+        border: 2px solid rgba(255, 165, 0, 0.6); 
+        /* Multi-layered glowing shadows */
+        box-shadow: 
+            0 0 10px rgba(255, 165, 0, 0.8),  /* Inner bright glow */
+            0 0 20px rgba(255, 140, 0, 0.6),  /* Middle orange glow */
+            0 0 40px rgba(255, 100, 0, 0.4),  /* Outer softer glow */
+            inset 0 0 15px rgba(255, 165, 0, 0.3); /* Inner glow on the card itself */
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .status-badge {
         display: inline-block;
-        background-color: rgba(34, 197, 94, 0.2);
+        background-color: rgba(34, 197, 94, 0.15);
         color: #4ade80;
-        padding: 6px 18px;
+        padding: 6px 16px;
         border-radius: 99px;
         font-size: 0.85rem;
         font-weight: 600;
-        border: 1px solid rgba(34, 197, 94, 0.4);
+        border: 1px solid rgba(34, 197, 94, 0.3);
         margin-bottom: 15px;
     }
 
@@ -141,14 +148,34 @@ st.markdown(
         background: linear-gradient(to bottom, #fff, #cbd5e1);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        /* Optional: Add a subtle text glow to match */
+        text-shadow: 0 0 10px rgba(255, 165, 0, 0.3);
+    }
+    
+    .customer-row {
+        color: #94a3b8;
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+
+    /* Address Box */
+    .address-box {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 165, 0, 0.2); /* Subtle orange border for address too */
+        padding: 15px;
+        border-radius: 12px;
+        font-family: monospace;
+        color: #cbd5e1;
+        font-size: 0.95rem;
+        margin-top: 20px;
+        margin-bottom: 30px;
     }
 
     .welcome-box {
-        margin-top: 50px;
-        padding: 40px;
+        margin-top: 60px;
+        padding: 50px;
         background: rgba(15, 23, 42, 0.6);
         border: 1px dashed rgba(255,255,255,0.2);
-        backdrop-filter: blur(10px);
         border-radius: 16px;
         text-align: center;
         color: #cbd5e1;
@@ -194,10 +221,10 @@ with st.sidebar:
 # -------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Title
+# Main Title
 st.markdown(
     """
-    <div style="text-align:center; margin-bottom: 30px;">
+    <div style="text-align:center; margin-bottom: 40px;">
         <h1 style="margin:0; font-size: 3.5rem; text-shadow: 0 4px 15px rgba(0,0,0,0.8);">
             ⚡ Power Check
         </h1>
@@ -209,45 +236,48 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Display Logic
+# --- Display Logic ---
 if st.session_state.selected_location:
     location_key = st.session_state.selected_location.lower().strip()
     
     if location_key in SITES:
         site = SITES[location_key]
         
-        # Info Card
+        # --- CLEAN CARD DESIGN WITH ELECTRIC BORDER ---
+        
         st.markdown(
             f"""
             <div class="result-header">
                 <div class="status-badge">● Active Location</div>
                 <div class="site-name">{site['site']}</div>
-                <div style="color:#cbd5e1; font-size:1.1rem;">
+                
+                <div class="customer-row">
                     👤 Customer: <span style="color:white; font-weight:600;">{site.get('customer', 'N/A')}</span>
                 </div>
+                
+                <div class="address-box">
+                    📍 {site.get('address', 'N/A')}
+                </div>
+
+                <div style="margin-top:20px;"></div>
             </div>
             """,
             unsafe_allow_html=True
         )
-
-        # Address
-        st.caption("📍 SITE ADDRESS")
-        st.code(site.get("address", "Address unavailable"), language="text")
-
-        # Link Button
-        st.write("") 
-        provider_name = site['provider']
         
+        # Provider Button
+        provider_name = site['provider']
         st.link_button(
             label=f"Check {provider_name} Status ➜",
             url=site['url'],
             use_container_width=True,
             type="primary" 
         )
+        
     else:
         st.error("Error: Location data not found.")
 else:
-    # Welcome Box
+    # Welcome Message
     st.markdown(
         """
         <div class="welcome-box">
