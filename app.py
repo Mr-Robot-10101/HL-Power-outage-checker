@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 🌈 VANTA.RINGS – OFFICIAL DEMO LOOK
+# 🌈 VANTA.RINGS – OFFICIAL DEMO LOOK (FIXED)
 # -------------------------------------------------
 components.html(
     """
@@ -69,7 +69,7 @@ components.html(
             50% { transform: scale(1.18); opacity: 1; }
         }
 
-        /* Provider buttons */
+        /* Provider button */
         .provider-btn a {
             display: inline-flex;
             align-items: center;
@@ -93,125 +93,4 @@ components.html(
 
     <!-- VANTA scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.rings.min.js"></script>
-
-    <script>
-        if (!window._vantaEffect) {
-            window._vantaEffect = VANTA.RINGS({
-                el: "#vanta-bg",
-                mouseControls: true,
-                touchControls: true,
-                gyroControls: false,
-                minHeight: 200.00,
-                minWidth: 200.00,
-                scale: 1.0,
-                scaleMobile: 1.0,
-                backgroundColor: 0x202428,   // SAME as demo
-                backgroundAlpha: 1.0
-            });
-        }
-    </script>
-    """,
-    height=400   // MUST be > 0
-)
-
-# -------------------------------------------------
-# Load sites
-# -------------------------------------------------
-with open("sites.json", "r", encoding="utf-8") as f:
-    SITES = json.load(f)
-
-locations_list = list(SITES.keys())
-
-# -------------------------------------------------
-# Session
-# -------------------------------------------------
-if "selected_location" not in st.session_state:
-    st.session_state.selected_location = ""
-
-# -------------------------------------------------
-# Sidebar
-# -------------------------------------------------
-with st.sidebar:
-    st.markdown("## ⚡ Locations")
-    st.caption("Tap a location to auto-fill")
-
-    for loc in locations_list:
-        if st.button(loc.title(), use_container_width=True):
-            st.session_state.selected_location = loc
-            st.rerun()
-
-# -------------------------------------------------
-# Header
-# -------------------------------------------------
-st.markdown(
-    """
-    <div style="text-align:center; margin-bottom:20px;">
-        <h1>
-            <span class="lightning">⚡</span> Power Outage Checker
-        </h1>
-        <p style="opacity:0.8;">
-            Auto-check power status using live provider outage maps
-        </p>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-# -------------------------------------------------
-# Input
-# -------------------------------------------------
-location = st.text_input(
-    "📍 Enter Location / Suburb",
-    value=st.session_state.selected_location
-)
-
-# -------------------------------------------------
-# Main content
-# -------------------------------------------------
-if location and location.lower() in SITES:
-    site = SITES[location.lower()]
-    address = site.get("address", "N/A")
-
-    st.success(
-        f"📍 **{site['site']}**\n\n"
-        f"👤 **Customer:** {site.get('customer','N/A')}"
-    )
-
-    components.html(
-        f"""
-        <div style="display:flex; gap:12px; align-items:center; margin:10px 0;">
-            <div style="font-weight:600; color:white;">
-                Address: {address}
-            </div>
-            <button
-                style="padding:6px 12px;border-radius:8px;border:none;
-                       background:rgba(255,255,255,0.15);
-                       color:white;font-weight:600;cursor:pointer;"
-                onclick="navigator.clipboard.writeText('{address}');
-                         this.innerText='✓ Copied';
-                         this.style.background='rgba(34,197,94,0.9)';">
-                📋 Copy
-            </button>
-        </div>
-        """,
-        height=60
-    )
-
-    st.write(f"**Provider:** {site['provider']}")
-
-    st.markdown(
-        f"""
-        <div class="provider-btn">
-            <a href="{site['url']}" target="_blank">
-                🔗 Open Provider Outage Page
-            </a>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-elif location:
-    st.error("❌ Location not found")
-else:
-    st.info("👈 Select a location from the sidebar")
+    <script
