@@ -30,20 +30,6 @@ st.markdown(
         color: white;
     }
 
-    /* --- SIDEBAR STYLING (1st Image Look) --- */
-    
-    section[data-testid="stSidebar"] {
-        background-color: #0b0f19;
-        border-right: 1px solid rgba(255,255,255,0.05);
-    }
-
-    /* Sidebar Header Text */
-    section[data-testid="stSidebar"] h3 {
-        color: #f1f5f9;
-        font-size: 1.1rem;
-        margin-bottom: 10px;
-    }
-
 /* ---------------- Sidebar Styling ---------------- */
     section[data-testid="stSidebar"] {
         background-color: #0b0f19;
@@ -67,27 +53,6 @@ st.markdown(
         border-color: #2563eb;
         transform: translateX(5px);
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    }
-
-    /* Ensure text inside button is centered */
-    section[data-testid="stSidebar"] button p {
-        text-align: center !important;
-        width: 100%;
-        margin: 0;
-    }
-
-    /* Hover Effect */
-    section[data-testid="stSidebar"] button:hover {
-        background-color: rgba(59, 130, 246, 0.2) !important; /* Blue tint */
-        border-color: #3b82f6 !important;
-        color: white !important;
-        transform: translateY(-1px);
-    }
-
-    /* Active/Focus Effect */
-    section[data-testid="stSidebar"] button:focus {
-        border-color: #60a5fa !important;
-        background-color: rgba(37, 99, 235, 0.3) !important;
     }
 
     /* --- MAIN CONTENT STYLING --- */
