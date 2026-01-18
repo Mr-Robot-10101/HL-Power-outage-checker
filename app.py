@@ -1,7 +1,6 @@
 import json
 import streamlit as st
 import streamlit.components.v1 as components
-from selenium_checker import check_power_status  # (kept if needed later)
 
 # -------------------------------------------------
 # Page config
@@ -14,18 +13,32 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 🎨 Custom Brand Theme + Provider Buttons (CSS)
+# 🎨 GLOBAL CSS (Animated background + Lightning pulse)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
-    /* App background */
+    /* ---------------- App background animation ---------------- */
     .stApp {
-        background-color: #0f172a;
+        background: linear-gradient(
+            -45deg,
+            #020617,
+            #0f172a,
+            #020617,
+            #111827
+        );
+        background-size: 400% 400%;
+        animation: gradientMove 18s ease infinite;
         color: #e5e7eb;
     }
 
-    /* Sidebar */
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* ---------------- Sidebar ---------------- */
     section[data-testid="stSidebar"] {
         background-color: #020617;
     }
@@ -37,23 +50,48 @@ st.markdown(
         border-radius: 10px;
         padding: 10px;
         font-weight: 500;
+        transition: all 0.2s ease;
     }
 
     section[data-testid="stSidebar"] button:hover {
         background-color: #1d4ed8;
+        transform: translateY(-1px);
     }
 
-    /* Alerts */
-    .stAlert {
-        border-radius: 14px;
+    /* ---------------- Lightning pulse ---------------- */
+    .lightning {
+        display: inline-block;
+        margin-right: 6px;
+        animation: lightningPulse 2.8s ease-in-out infinite;
+        text-shadow:
+            0 0 6px rgba(250,204,21,0.6),
+            0 0 14px rgba(250,204,21,0.35);
     }
 
-    /* ---------------- Provider button styles ---------------- */
+    @keyframes lightningPulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.9;
+        }
+        50% {
+            transform: scale(1.15);
+            opacity: 1;
+            text-shadow:
+                0 0 10px rgba(250,204,21,0.9),
+                0 0 24px rgba(250,204,21,0.55);
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.9;
+        }
+    }
+
+    /* ---------------- Provider buttons ---------------- */
     .provider-link-btn a {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 10px 18px;
+        padding: 12px 22px;
         border-radius: 999px;
         color: #ffffff !important;
         text-decoration: none;
@@ -63,36 +101,25 @@ st.markdown(
         transition: all 0.25s ease;
     }
 
-    /* Jemena - Green */
     .provider-jemena a {
         background: linear-gradient(90deg, #16a34a, #22c55e);
     }
-    .provider-jemena a:hover {
-        box-shadow: 0 8px 22px rgba(34,197,94,0.55);
-        transform: translateY(-1px);
-    }
 
-    /* Powercor - Blue */
     .provider-powercor a {
         background: linear-gradient(90deg, #2563eb, #1d4ed8);
     }
-    .provider-powercor a:hover {
-        box-shadow: 0 8px 22px rgba(37,99,235,0.55);
-        transform: translateY(-1px);
-    }
 
-    /* AusNet - Purple */
     .provider-ausnet a {
         background: linear-gradient(90deg, #7c3aed, #9333ea);
     }
-    .provider-ausnet a:hover {
-        box-shadow: 0 8px 22px rgba(147,51,234,0.55);
-        transform: translateY(-1px);
-    }
 
-    /* Default */
     .provider-default a {
         background: linear-gradient(90deg, #1f6feb, #2563eb);
+    }
+
+    .provider-link-btn a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 26px rgba(0,0,0,0.45);
     }
     </style>
     """,
@@ -126,12 +153,14 @@ with st.sidebar:
             st.rerun()
 
 # -------------------------------------------------
-# Header
+# Header with lightning pulse
 # -------------------------------------------------
 st.markdown(
     """
-    <div style="text-align:center;">
-        <h1 style="margin-bottom:4px;">⚡ Power Outage Checker</h1>
+    <div style="text-align:center; margin-bottom:20px;">
+        <h1>
+            <span class="lightning">⚡</span> Power Outage Checker
+        </h1>
         <p style="opacity:0.75;">
             Auto-check power status using live provider outage maps
         </p>
@@ -149,7 +178,7 @@ location = st.text_input(
 )
 
 # -------------------------------------------------
-# Main view
+# Main content
 # -------------------------------------------------
 if location and location.lower() in SITES:
     site = SITES[location.lower()]
@@ -160,25 +189,13 @@ if location and location.lower() in SITES:
         f"👤 **Customer:** {site.get('customer', 'N/A')}"
     )
 
-    # -------------------------------------------------
-    # Address (WHITE) + HTML Copy button (NO rerun)
-    # -------------------------------------------------
+    # ---------------- Address + copy (NO rerun) ----------------
     components.html(
         f"""
-        <div style="
-            display:flex;
-            align-items:center;
-            gap:12px;
-            margin:10px 0;
-        ">
-            <div style="
-                font-weight:600;
-                color:#ffffff;
-                font-size:16px;
-            ">
+        <div style="display:flex; align-items:center; gap:12px; margin:10px 0;">
+            <div style="font-weight:600; color:#ffffff; font-size:16px;">
                 Address: {address}
             </div>
-
             <button
                 style="
                     padding:6px 12px;
@@ -202,12 +219,8 @@ if location and location.lower() in SITES:
         height=60,
     )
 
-    # -------------------------------------------------
-    # Provider
-    # -------------------------------------------------
     st.write(f"**Provider:** {site['provider']}")
 
-    # Provider-based color class
     provider_name = site["provider"].lower()
     if "jemena" in provider_name:
         provider_class = "provider-jemena"
@@ -218,9 +231,6 @@ if location and location.lower() in SITES:
     else:
         provider_class = "provider-default"
 
-    # -------------------------------------------------
-    # Styled Provider Outage Page button
-    # -------------------------------------------------
     st.markdown(
         f"""
         <div class="provider-link-btn {provider_class}">
