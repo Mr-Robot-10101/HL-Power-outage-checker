@@ -1,5 +1,6 @@
 import json
 import streamlit as st
+import streamlit.components.v1 as components
 from selenium_checker import check_power_status
 
 # -------------------------------------------------
@@ -18,18 +19,15 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* App background */
     .stApp {
         background-color: #0f172a;
         color: #e5e7eb;
     }
 
-    /* Sidebar */
     section[data-testid="stSidebar"] {
         background-color: #020617;
     }
 
-    /* Sidebar buttons */
     section[data-testid="stSidebar"] button {
         background-color: #020617;
         color: #e5e7eb;
@@ -45,7 +43,6 @@ st.markdown(
         border-color: #1f6feb;
     }
 
-    /* Main buttons */
     .stButton > button {
         background: linear-gradient(90deg, #1f6feb, #2563eb);
         color: white;
@@ -59,11 +56,9 @@ st.markdown(
         background: linear-gradient(90deg, #2563eb, #1d4ed8);
     }
 
-    /* Success / warning / error boxes */
     .stAlert {
         border-radius: 14px;
     }
-
     </style>
     """,
     unsafe_allow_html=True
@@ -108,16 +103,14 @@ if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
 
 # -------------------------------------------------
-# Sidebar – Highlighted selection (brand color)
+# Sidebar – Highlight selected location
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("## ⚡ Locations")
     st.caption("Tap a location to auto-fill")
 
     for loc in locations_list:
-        is_selected = st.session_state.selected_location.lower() == loc.lower()
-
-        if is_selected:
+        if st.session_state.selected_location.lower() == loc.lower():
             st.markdown(
                 f"""
                 <div style="
@@ -128,7 +121,6 @@ with st.sidebar:
                     color:white;
                     font-weight:700;
                     text-align:center;
-                    box-shadow:0 0 10px rgba(31,111,235,0.6);
                 ">
                     ⚡ {loc}
                 </div>
@@ -178,7 +170,32 @@ if location:
             f"👤 **Customer:** {site.get('customer', 'N/A')}"
         )
 
-        st.write(f"**Address:** {site.get('address', 'N/A')}")
+        # -------------------------------------------------
+        # Address + 📋 Copy button (STABLE)
+        # -------------------------------------------------
+        address = site.get("address", "N/A")
+
+        col1, col2 = st.columns([6, 1])
+
+        with col1:
+            st.write(f"**Address:** {address}")
+
+        with col2:
+            if st.button("📋 Copy", key=f"copy_{key}"):
+                st.toast("📍 Address copied!", icon="✅")
+
+                components.html(
+                    f"""
+                    <script>
+                        navigator.clipboard.writeText("{address}");
+                    </script>
+                    """,
+                    height=0,
+                )
+
+        # -------------------------------------------------
+        # Provider
+        # -------------------------------------------------
         st.write(f"**Provider:** {site['provider']}")
 
         st.link_button(
@@ -186,6 +203,9 @@ if location:
             site["url"]
         )
 
+        # -------------------------------------------------
+        # Auto-check power status
+        # -------------------------------------------------
         if st.button("🔍 Auto-Check Power Status", use_container_width=True):
             with st.spinner("Checking live outage map..."):
                 result = check_power_status(
