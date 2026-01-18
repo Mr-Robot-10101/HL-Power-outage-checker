@@ -1,6 +1,5 @@
 import json
 import streamlit as st
-import textwrap  # HTML Indentation ගැටලුව විසඳීමට මෙය භාවිතා කරයි
 
 # -------------------------------------------------
 # 1. Page Config
@@ -13,7 +12,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (Background + Solid Sidebar + Card)
+# 2. 🎨 CSS Styles
 # -------------------------------------------------
 st.markdown(
     """
@@ -48,7 +47,7 @@ st.markdown(
         100% { background-position: 0% 50%; }
     }
 
-    /* --- SIDEBAR STYLING (Solid Dark Style) --- */
+    /* --- SIDEBAR STYLING --- */
     section[data-testid="stSidebar"] {
         background-color: #0b0f19;
         border-right: 1px solid rgba(255,255,255,0.05);
@@ -61,21 +60,19 @@ st.markdown(
         margin-bottom: 10px;
     }
 
-    /* Sidebar Buttons - Solid Box & Centered Text */
+    /* Solid Sidebar Buttons */
     section[data-testid="stSidebar"] button {
-        background-color: #1e293b !important; /* Solid Dark Color */
+        background-color: #1e293b !important;
         color: #e2e8f0 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px !important;
         margin-bottom: 8px !important;
         padding: 12px 0 !important;
         width: 100%;
-        
         text-align: center !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-        
         font-weight: 500 !important;
         font-size: 0.95rem !important;
         transition: all 0.2s ease-in-out !important;
@@ -89,7 +86,7 @@ st.markdown(
     }
 
     section[data-testid="stSidebar"] button:hover {
-        background-color: #3b82f6 !important; /* Blue Hover */
+        background-color: #3b82f6 !important;
         border-color: #3b82f6 !important;
         color: white !important;
         transform: translateY(-1px);
@@ -103,7 +100,7 @@ st.markdown(
     }
 
     /* -------------------------------------------------------
-       ⚡ ELECTRIC BORDER CARD STYLES
+       ⚡ ELECTRIC BORDER CSS
        ------------------------------------------------------- */
     
     :root {
@@ -124,7 +121,7 @@ st.markdown(
     .inner-container {
         position: relative;
         border-radius: 24px;
-        background: rgba(15, 23, 42, 0.9);
+        background: rgba(15, 23, 42, 0.95); /* Solid dark background */
         z-index: 1;
         overflow: hidden;
     }
@@ -140,7 +137,7 @@ st.markdown(
         border-radius: 24px;
         border: 2px solid var(--electric-border-color);
         margin-top: -4px; margin-left: -4px;
-        filter: url(#turbulent-displace);
+        filter: url(#turbulent-displace); /* SVG Filter applied here */
         pointer-events: none;
     }
 
@@ -160,7 +157,7 @@ st.markdown(
         position: absolute; inset: 0;
         border-radius: 24px;
         filter: blur(40px);
-        opacity: 0.25;
+        opacity: 0.3;
         z-index: -1;
         background: radial-gradient(circle, var(--electric-border-color), transparent 70%);
         pointer-events: none;
@@ -262,7 +259,7 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# 3. Load Data & State
+# 3. Load Data
 # -------------------------------------------------
 try:
     with open("sites.json", "r", encoding="utf-8") as f:
@@ -276,7 +273,7 @@ if "selected_location" not in st.session_state:
     st.session_state.selected_location = None
 
 # -------------------------------------------------
-# 4. Sidebar Logic
+# 4. Sidebar
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("### 🗺️ Locations")
@@ -292,7 +289,6 @@ with st.sidebar:
 # -------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Main Title
 st.markdown(
     """
     <div style="text-align:center; margin-bottom: 40px;">
@@ -314,74 +310,72 @@ if st.session_state.selected_location:
     if location_key in SITES:
         site = SITES[location_key]
         
-        # --- HTML Generation with textwrap.dedent ---
-        # මෙය භාවිතා කිරීමෙන් HTML එක Code Block එකක් ලෙස පෙන්වීම නතර වේ.
-        
-        electric_card_html = textwrap.dedent(f"""
-            <svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
-              <defs>
-                <filter id="turbulent-displace" x="-20%" y="-20%" width="140%" height="140%">
-                  <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise1" seed="1" />
-                  <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
-                    <animate attributeName="dy" values="700; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
-                  </feOffset>
-                  <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise2" seed="1" />
-                  <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
-                    <animate attributeName="dy" values="0; -700" dur="6s" repeatCount="indefinite" calcMode="linear" />
-                  </feOffset>
-                  <feComposite in="offsetNoise1" in2="offsetNoise2" result="part1" />
-                  <feDisplacementMap in="SourceGraphic" in2="part1" scale="30" xChannelSelector="R" yChannelSelector="B" />
-                </filter>
-              </defs>
-            </svg>
+        # --- HTML STRING (FLUSH LEFT) ---
+        # වැදගත්: පහත HTML කේතය පිටුවේ වම් කෙළවරටම (Flush Left) ලියා ඇත.
+        # මෙහි කිසිදු ඉඩක් (Indentation) නැති නිසා Streamlit මෙය Code Block එකක් ලෙස නොසලකයි.
 
-            <div class="electric-card-container">
-              <div class="inner-container">
-                
-                <div class="border-outer">
-                  <div class="main-card"></div>
-                </div>
-                <div class="glow-layer-1"></div>
-                <div class="glow-layer-2"></div>
-                <div class="background-glow"></div>
+        electric_card_html = f"""
+<div class="electric-card-container">
+    <div class="inner-container">
+        <svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
+          <defs>
+            <filter id="turbulent-displace" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise1" seed="1" />
+              <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
+                <animate attributeName="dy" values="700; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
+              </feOffset>
+              <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise2" seed="1" />
+              <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
+                <animate attributeName="dy" values="0; -700" dur="6s" repeatCount="indefinite" calcMode="linear" />
+              </feOffset>
+              <feComposite in="offsetNoise1" in2="offsetNoise2" result="part1" />
+              <feDisplacementMap in="SourceGraphic" in2="part1" scale="30" xChannelSelector="R" yChannelSelector="B" />
+            </filter>
+          </defs>
+        </svg>
 
-                <div class="content-container">
-                    <div class="scrollbar-glass">
-                      ● Active Location
-                    </div>
-                    
-                    <p class="card-title">{site['site']}</p>
-                    
-                    <p class="customer-info">
-                       👤 Customer: <span style="color:white; font-weight:600;">{site.get('customer', 'N/A')}</span>
-                    </p>
-                    
-                    <div class="address-text">
-                        📍 {site.get('address', 'N/A')}
-                    </div>
+        <div class="border-outer">
+          <div class="main-card"></div>
+        </div>
+        <div class="glow-layer-1"></div>
+        <div class="glow-layer-2"></div>
+        <div class="background-glow"></div>
 
-                    <hr class="divider" />
-
-                    <div style="width:100%;">
-                        <p style="color:#cbd5e1; margin-bottom:15px; font-size:0.95rem;">
-                            Provider: <strong>{site['provider']}</strong>
-                        </p>
-                        <a href="{site['url']}" target="_blank" class="custom-link-btn">
-                            Check Status ➜
-                        </a>
-                    </div>
-                </div>
-                
-              </div>
+        <div class="content-container">
+            <div class="scrollbar-glass">
+              ● Active Location
             </div>
-        """)
+            
+            <p class="card-title">{site['site']}</p>
+            
+            <p class="customer-info">
+               👤 Customer: <span style="color:white; font-weight:600;">{site.get('customer', 'N/A')}</span>
+            </p>
+            
+            <div class="address-text">
+                📍 {site.get('address', 'N/A')}
+            </div>
+
+            <hr class="divider" />
+
+            <div style="width:100%;">
+                <p style="color:#cbd5e1; margin-bottom:15px; font-size:0.95rem;">
+                    Provider: <strong>{site['provider']}</strong>
+                </p>
+                <a href="{site['url']}" target="_blank" class="custom-link-btn">
+                    Check Status ➜
+                </a>
+            </div>
+        </div>
         
+    </div>
+</div>
+"""
         st.markdown(electric_card_html, unsafe_allow_html=True)
         
     else:
         st.error("Error: Location data not found.")
 else:
-    # Welcome Message
     st.markdown(
         """
         <div class="welcome-box">
