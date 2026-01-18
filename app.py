@@ -12,55 +12,94 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (FIXED & SAFE)
+# 2. 🎨 CSS Styles & NEW ANIMATION
 # -------------------------------------------------
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
     
-    /* General Settings */
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
     }
 
-    /* Make Streamlit Transparent so our background shows through */
+    /* Make Streamlit Transparent */
     .stApp {
         background: transparent !important;
     }
 
-    /* --- FIXED BACKGROUND LAYER --- */
-    /* මෙම කොටස මගින් පසුබිම වෙනම Layer එකක් ලෙස සකසයි */
+    /* --- NEW BACKGROUND ANIMATION (Floating Orbs) --- */
     #bg-animation {
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
-        z-index: -1; /* අනිත් සියල්ලටම වඩා පිටුපසින් */
-        background: linear-gradient(125deg, #020617 0%, #0f172a 40%, #1e1b4b 100%);
-        background-size: 400% 400%;
-        animation: gradientMove 15s ease infinite;
+        z-index: -1;
+        background-color: #0b0f19; /* Deep Dark Background */
+        overflow: hidden;
     }
-    
-    /* Add a subtle pattern overlay */
+
+    /* Glowing Orbs */
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px); /* This creates the glow effect */
+        opacity: 0.6;
+        animation: float ease-in-out infinite;
+    }
+
+    /* Orb 1 (Purple/Blue) */
+    .orb-1 {
+        width: 500px;
+        height: 500px;
+        background: linear-gradient(180deg, #4c1d95 0%, #2563eb 100%);
+        top: -100px;
+        left: -100px;
+        animation-duration: 10s;
+    }
+
+    /* Orb 2 (Cyan/Green) */
+    .orb-2 {
+        width: 400px;
+        height: 400px;
+        background: linear-gradient(180deg, #0ea5e9 0%, #22c55e 100%);
+        bottom: -50px;
+        right: -50px;
+        animation-duration: 12s;
+        animation-delay: -2s;
+    }
+
+    /* Orb 3 (Accent Blue) */
+    .orb-3 {
+        width: 300px;
+        height: 300px;
+        background: #3b82f6;
+        top: 40%;
+        left: 40%;
+        opacity: 0.4;
+        animation-duration: 15s;
+        animation-delay: -5s;
+    }
+
+    /* Movement Animation */
+    @keyframes float {
+        0% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0, 0) scale(1); }
+    }
+
+    /* Grid Overlay (Tech Feel) */
     #bg-animation::after {
         content: "";
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: 0; left: 0; width: 100%; height: 100%;
         background-image: 
-            radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-        background-size: 30px 30px;
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
         pointer-events: none;
-    }
-
-    @keyframes gradientMove {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
     }
 
     /* --- SIDEBAR STYLING --- */
@@ -112,12 +151,12 @@ st.markdown(
 
     /* --- MAIN CONTENT CARD --- */
     .result-header {
-        background: rgba(15, 23, 42, 0.7);
+        background: rgba(15, 23, 42, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
+        border-radius: 20px;
         padding: 40px;
         text-align: center;
-        backdrop-filter: blur(15px);
+        backdrop-filter: blur(20px);
         margin-bottom: 20px;
         box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     }
@@ -141,6 +180,7 @@ st.markdown(
         background: linear-gradient(to bottom, #fff, #cbd5e1);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
 
     .welcome-box {
@@ -158,7 +198,11 @@ st.markdown(
     footer {visibility: hidden;}
     </style>
     
-    <div id="bg-animation"></div>
+    <div id="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
     """,
     unsafe_allow_html=True
 )
