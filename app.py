@@ -46,13 +46,10 @@ with open("sites.json", "r", encoding="utf-8") as f:
 locations_list = list(SITES.keys())
 
 # -------------------------------------------------
-# Session state
+# Session
 # -------------------------------------------------
 if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
-
-if "copy_trigger" not in st.session_state:
-    st.session_state.copy_trigger = False
 
 # -------------------------------------------------
 # Sidebar
@@ -90,7 +87,7 @@ location = st.text_input(
 )
 
 # -------------------------------------------------
-# MAIN VIEW (stable)
+# MAIN
 # -------------------------------------------------
 if location and location.lower() in SITES:
     site = SITES[location.lower()]
@@ -101,33 +98,33 @@ if location and location.lower() in SITES:
         f"👤 **Customer:** {site.get('customer','N/A')}"
     )
 
-    # ---------------- Address row (ALWAYS visible)
-    col1, col2 = st.columns([6,1])
-
-    with col1:
-        st.write(f"**Address:** {address}")
-
-    with col2:
-        st.button(
-            "📋 Copy",
-            key="copy_btn",
-            on_click=lambda: st.session_state.update(
-                {"copy_trigger": True}
-            )
-        )
-
-    # ---------------- Clipboard JS (isolated + stable)
-    if st.session_state.copy_trigger:
-        components.html(
-            f"""
-            <script>
-                navigator.clipboard.writeText("{address}");
-            </script>
-            """,
-            height=0
-        )
-        st.toast("📍 Address copied!", icon="✅")
-        st.session_state.copy_trigger = False
+    # -------------------------------------------------
+    # ✅ Address + HTML Copy Button (NO RERUN)
+    # -------------------------------------------------
+    components.html(
+        f"""
+        <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-weight:600;">
+                Address: {address}
+            </div>
+            <button
+                style="
+                    padding:6px 12px;
+                    border-radius:8px;
+                    border:none;
+                    background:#2563eb;
+                    color:white;
+                    cursor:pointer;
+                "
+                onclick="navigator.clipboard.writeText('{address}');
+                         this.innerText='✔ Copied';"
+            >
+                📋 Copy
+            </button>
+        </div>
+        """,
+        height=60,
+    )
 
     st.write(f"**Provider:** {site['provider']}")
     st.link_button("🔗 Open Provider Outage Page", site["url"])
