@@ -13,26 +13,31 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 🌌 VANTA.RINGS BACKGROUND (Three.js)
+# 🌌 VANTA.RINGS BACKGROUND (FIXED FOR STREAMLIT CLOUD)
 # -------------------------------------------------
 components.html(
     """
     <div id="vanta-bg"></div>
 
     <style>
+        /* VANTA background layer */
         #vanta-bg {
             position: fixed;
-            inset: 0;
-            z-index: -1;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
         }
 
-        /* Keep content readable */
+        /* Make Streamlit transparent so VANTA is visible */
         .stApp {
             background: transparent;
             color: #e5e7eb;
         }
 
-        /* Sidebar */
+        /* Sidebar styling */
         section[data-testid="stSidebar"] {
             background-color: rgba(2, 6, 23, 0.95);
         }
@@ -40,8 +45,8 @@ components.html(
         section[data-testid="stSidebar"] button {
             background-color: #2563eb;
             color: white;
-            border: none;
             border-radius: 10px;
+            border: none;
             padding: 10px;
             font-weight: 500;
             transition: all 0.2s ease;
@@ -52,11 +57,11 @@ components.html(
             transform: translateY(-1px);
         }
 
-        /* Lightning pulse */
+        /* Lightning pulse near title */
         .lightning {
             display: inline-block;
             margin-right: 6px;
-            animation: lightningPulse 2.8s ease-in-out infinite;
+            animation: lightningPulse 2.6s ease-in-out infinite;
             text-shadow:
                 0 0 6px rgba(250,204,21,0.6),
                 0 0 14px rgba(250,204,21,0.35);
@@ -64,44 +69,32 @@ components.html(
 
         @keyframes lightningPulse {
             0% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.15); opacity: 1; }
+            50% { transform: scale(1.18); opacity: 1; }
             100% { transform: scale(1); opacity: 0.9; }
         }
 
         /* Provider buttons */
-        .provider-link-btn a {
+        .provider-btn a {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             padding: 12px 22px;
             border-radius: 999px;
-            color: #ffffff !important;
-            text-decoration: none;
             font-weight: 600;
-            font-size: 14px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+            text-decoration: none;
+            color: white !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.35);
             transition: all 0.25s ease;
         }
 
-        .provider-jemena a {
-            background: linear-gradient(90deg, #16a34a, #22c55e);
-        }
+        .jemena a { background: linear-gradient(90deg,#16a34a,#22c55e); }
+        .powercor a { background: linear-gradient(90deg,#2563eb,#1d4ed8); }
+        .ausnet a { background: linear-gradient(90deg,#7c3aed,#9333ea); }
+        .default a { background: linear-gradient(90deg,#1f6feb,#2563eb); }
 
-        .provider-powercor a {
-            background: linear-gradient(90deg, #2563eb, #1d4ed8);
-        }
-
-        .provider-ausnet a {
-            background: linear-gradient(90deg, #7c3aed, #9333ea);
-        }
-
-        .provider-default a {
-            background: linear-gradient(90deg, #1f6feb, #2563eb);
-        }
-
-        .provider-link-btn a:hover {
+        .provider-btn a:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.45);
         }
     </style>
 
@@ -109,21 +102,23 @@ components.html(
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.rings.min.js"></script>
 
     <script>
-        VANTA.RINGS({
-            el: "#vanta-bg",
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.0,
-            scaleMobile: 1.0,
-            backgroundColor: 0x020617,
-            color: 0x2563eb
-        });
+        if (!window._vantaEffect) {
+            window._vantaEffect = VANTA.RINGS({
+                el: "#vanta-bg",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.0,
+                scaleMobile: 1.0,
+                backgroundColor: 0x020617,
+                color: 0x2563eb
+            });
+        }
     </script>
     """,
-    height=0
+    height=300  # ⚠️ MUST NOT BE 0
 )
 
 # -------------------------------------------------
@@ -178,7 +173,7 @@ location = st.text_input(
 )
 
 # -------------------------------------------------
-# Main view
+# Main content
 # -------------------------------------------------
 if location and location.lower() in SITES:
     site = SITES[location.lower()]
@@ -189,29 +184,19 @@ if location and location.lower() in SITES:
         f"👤 **Customer:** {site.get('customer', 'N/A')}"
     )
 
-    # Address + Copy (no rerun)
+    # Address + copy (NO rerun)
     components.html(
         f"""
-        <div style="display:flex; align-items:center; gap:12px; margin:10px 0;">
-            <div style="font-weight:600; color:#ffffff; font-size:16px;">
+        <div style="display:flex; gap:12px; align-items:center; margin:10px 0;">
+            <div style="font-weight:600; color:white;">
                 Address: {address}
             </div>
             <button
-                style="
-                    padding:6px 12px;
-                    border-radius:8px;
-                    border:none;
-                    background:#2563eb;
-                    color:white;
-                    cursor:pointer;
-                    font-weight:600;
-                "
-                onclick="
-                    navigator.clipboard.writeText('{address}');
-                    this.innerText='✓ Copied';
-                    this.style.background='#16a34a';
-                "
-            >
+                style="padding:6px 12px;border-radius:8px;border:none;
+                       background:#2563eb;color:white;font-weight:600;cursor:pointer;"
+                onclick="navigator.clipboard.writeText('{address}');
+                         this.innerText='✓ Copied';
+                         this.style.background='#16a34a';">
                 📋 Copy
             </button>
         </div>
@@ -221,19 +206,17 @@ if location and location.lower() in SITES:
 
     st.write(f"**Provider:** {site['provider']}")
 
-    provider_name = site["provider"].lower()
-    if "jemena" in provider_name:
-        provider_class = "provider-jemena"
-    elif "powercor" in provider_name:
-        provider_class = "provider-powercor"
-    elif "ausnet" in provider_name:
-        provider_class = "provider-ausnet"
-    else:
-        provider_class = "provider-default"
+    p = site["provider"].lower()
+    cls = (
+        "jemena" if "jemena" in p
+        else "powercor" if "powercor" in p
+        else "ausnet" if "ausnet" in p
+        else "default"
+    )
 
     st.markdown(
         f"""
-        <div class="provider-link-btn {provider_class}">
+        <div class="provider-btn {cls}">
             <a href="{site['url']}" target="_blank">
                 🔗 Open Provider Outage Page
             </a>
