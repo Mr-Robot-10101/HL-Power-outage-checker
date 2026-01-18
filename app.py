@@ -8,59 +8,57 @@ import streamlit.components.v1 as components
 st.set_page_config(
     page_title="Power Outage Checker",
     page_icon="⚡",
-    layout="centered",
-    initial_sidebar_state="expanded"
+    layout="centered"
 )
 
 # -------------------------------------------------
-# 🎨 MODERN UI THEME (Glass + Soft Glow)
+# 🎨 Modern UI Theme (Glass + Soft Glow)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
-    /* ---------- Background ---------- */
+    /* Background */
     .stApp {
         background: radial-gradient(circle at top, #0f172a, #020617);
         color: #e5e7eb;
     }
 
-    /* ---------- Header ---------- */
+    /* Header */
     .app-title {
         font-size: 44px;
         font-weight: 800;
         letter-spacing: -0.5px;
         text-align: center;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
     }
-
     .app-subtitle {
         text-align: center;
-        opacity: 0.75;
+        opacity: .75;
         font-size: 15px;
         margin-bottom: 28px;
     }
 
-    /* ---------- Input (glass) ---------- */
+    /* Input (glass) */
     input {
-        background: rgba(15, 23, 42, 0.75) !important;
+        background: rgba(15, 23, 42, .75) !important;
         border-radius: 14px !important;
         border: 1px solid #1f2937 !important;
         padding: 14px !important;
         font-size: 15px !important;
     }
 
-    /* ---------- Card ---------- */
+    /* Card */
     .card {
-        background: rgba(2, 6, 23, 0.7);
+        background: rgba(2, 6, 23, .75);
         border: 1px solid #1f2937;
         border-radius: 18px;
         padding: 22px;
-        margin-top: 20px;
-        box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+        margin-top: 22px;
+        box-shadow: 0 12px 35px rgba(0,0,0,.45);
         backdrop-filter: blur(6px);
     }
 
-    /* ---------- Address row ---------- */
+    /* Address row */
     .address-row {
         display: flex;
         align-items: center;
@@ -69,8 +67,8 @@ st.markdown(
         font-size: 16px;
         font-weight: 600;
         color: #ffffff;
+        flex-wrap: wrap;
     }
-
     .copy-btn {
         padding: 6px 14px;
         border-radius: 999px;
@@ -79,15 +77,14 @@ st.markdown(
         color: white;
         cursor: pointer;
         font-weight: 600;
-        transition: all 0.25s ease;
+        transition: all .25s ease;
     }
-
     .copy-btn:hover {
         transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(37,99,235,0.45);
+        box-shadow: 0 6px 18px rgba(37,99,235,.45);
     }
 
-    /* ---------- Provider Button ---------- */
+    /* Provider button */
     .provider-btn {
         display: inline-flex;
         align-items: center;
@@ -99,17 +96,18 @@ st.markdown(
         text-decoration: none;
         box-shadow: 0 8px 24px rgba(0,0,0,.45);
         transition: all .25s ease;
+        margin-top: 6px;
     }
-
-    .provider-btn:hover {
-        transform: translateY(-2px);
-    }
+    .provider-btn:hover { transform: translateY(-2px); }
 
     .jemena { background: linear-gradient(90deg, #16a34a, #22c55e); }
     .powercor { background: linear-gradient(90deg, #2563eb, #1d4ed8); }
     .ausnet { background: linear-gradient(90deg, #7c3aed, #9333ea); }
     .default { background: linear-gradient(90deg, #1f6feb, #2563eb); }
 
+    @media (max-width: 768px) {
+        .provider-btn { width: 100%; justify-content: center; }
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -137,12 +135,10 @@ st.markdown(
 # -------------------------------------------------
 # Input
 # -------------------------------------------------
-location = st.text_input(
-    "📍 Enter Location / Suburb"
-)
+location = st.text_input("📍 Enter Location / Suburb")
 
 # -------------------------------------------------
-# Main content
+# Main
 # -------------------------------------------------
 if location and location.lower() in SITES:
     site = SITES[location.lower()]
@@ -164,7 +160,7 @@ if location and location.lower() in SITES:
             <button class="copy-btn"
                 onclick="
                     navigator.clipboard.writeText('{address}');
-                    this.innerText='✓ Copied';
+                    this.innerText='✔ Copied';
                     setTimeout(()=>this.innerText='📋 Copy',1500);
                 ">
                 📋 Copy
