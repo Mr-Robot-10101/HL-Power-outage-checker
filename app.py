@@ -14,50 +14,23 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 🎨 Custom Brand Theme (CSS)
+# Theme
 # -------------------------------------------------
 st.markdown(
     """
     <style>
-    .stApp {
-        background-color: #0f172a;
-        color: #e5e7eb;
-    }
-
-    section[data-testid="stSidebar"] {
-        background-color: #020617;
-    }
+    .stApp { background-color:#0f172a; color:#e5e7eb; }
+    section[data-testid="stSidebar"] { background-color:#020617; }
 
     section[data-testid="stSidebar"] button {
-        background-color: #020617;
-        color: #e5e7eb;
-        border: 1px solid #1f2937;
-        border-radius: 10px;
-        padding: 10px;
-        font-weight: 500;
+        background:#2563eb; color:white; border:none;
+        border-radius:10px; padding:10px; font-weight:500;
     }
 
-    section[data-testid="stSidebar"] button:hover {
-        background-color: #1f6feb;
-        color: white;
-        border-color: #1f6feb;
-    }
-
-    .stButton > button {
-        background: linear-gradient(90deg, #1f6feb, #2563eb);
-        color: white;
-        border-radius: 12px;
-        border: none;
-        padding: 10px 16px;
-        font-weight: 600;
-    }
-
-    .stButton > button:hover {
-        background: linear-gradient(90deg, #2563eb, #1d4ed8);
-    }
-
-    .stAlert {
-        border-radius: 14px;
+    .stButton>button {
+        background:linear-gradient(90deg,#2563eb,#1d4ed8);
+        color:white; border-radius:12px; border:none;
+        padding:10px 16px; font-weight:600;
     }
     </style>
     """,
@@ -65,36 +38,12 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# Load sites database
+# Load data
 # -------------------------------------------------
 with open("sites.json", "r", encoding="utf-8") as f:
     SITES = json.load(f)
 
-# -------------------------------------------------
-# Locations list
-# -------------------------------------------------
-locations_list = [
-    "Claremont",
-    "Shepparton",
-    "Knoxfield",
-    "Glen Iris",
-    "Brisbane",
-    "Broadmeadows",
-    "Kilsyth",
-    "Hastings",
-    "Mornington",
-    "Balwyn",
-    "Greensborough",
-    "Elsternwick",
-    "Glen Waverley",
-    "St Kilda Road",
-    "RRC",
-    "Clunes",
-    "Chum Creek",
-    "Mallana",
-    "Lochend",
-    "Indooroopilly"
-]
+locations_list = list(SITES.keys())
 
 # -------------------------------------------------
 # Session state
@@ -102,35 +51,20 @@ locations_list = [
 if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
 
+if "copy_trigger" not in st.session_state:
+    st.session_state.copy_trigger = False
+
 # -------------------------------------------------
-# Sidebar – Highlight selected location
+# Sidebar
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("## ⚡ Locations")
     st.caption("Tap a location to auto-fill")
 
     for loc in locations_list:
-        if st.session_state.selected_location.lower() == loc.lower():
-            st.markdown(
-                f"""
-                <div style="
-                    padding:12px;
-                    margin-bottom:8px;
-                    border-radius:12px;
-                    background:linear-gradient(90deg,#1f6feb,#2563eb);
-                    color:white;
-                    font-weight:700;
-                    text-align:center;
-                ">
-                    ⚡ {loc}
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-        else:
-            if st.button(loc, use_container_width=True, key=f"loc_{loc}"):
-                st.session_state.selected_location = loc.lower()
-                st.rerun()
+        if st.button(loc.title(), use_container_width=True):
+            st.session_state.selected_location = loc
+            st.rerun()
 
 # -------------------------------------------------
 # Header
@@ -138,8 +72,8 @@ with st.sidebar:
 st.markdown(
     """
     <div style="text-align:center;">
-        <h1 style="margin-bottom:4px;">⚡ Power Outage Checker</h1>
-        <p style="opacity:0.75;">
+        <h1>⚡ Power Outage Checker</h1>
+        <p style="opacity:.7">
             Auto-check power status using live provider outage maps
         </p>
     </div>
@@ -148,81 +82,68 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# Location input
+# Input
 # -------------------------------------------------
 location = st.text_input(
     "📍 Enter Location / Suburb",
-    value=st.session_state.selected_location,
-    key="location_input"
+    value=st.session_state.selected_location
 )
 
 # -------------------------------------------------
-# Main logic
+# MAIN VIEW (stable)
 # -------------------------------------------------
-if location:
-    key = location.lower().strip()
+if location and location.lower() in SITES:
+    site = SITES[location.lower()]
+    address = site.get("address", "N/A")
 
-    if key in SITES:
-        site = SITES[key]
+    st.success(
+        f"📍 **{site['site']}**\n\n"
+        f"👤 **Customer:** {site.get('customer','N/A')}"
+    )
 
-        st.success(
-            f"📍 **{site['site']}**\n\n"
-            f"👤 **Customer:** {site.get('customer', 'N/A')}"
+    # ---------------- Address row (ALWAYS visible)
+    col1, col2 = st.columns([6,1])
+
+    with col1:
+        st.write(f"**Address:** {address}")
+
+    with col2:
+        st.button(
+            "📋 Copy",
+            key="copy_btn",
+            on_click=lambda: st.session_state.update(
+                {"copy_trigger": True}
+            )
         )
 
-        # -------------------------------------------------
-        # Address + 📋 Copy button (STABLE)
-        # -------------------------------------------------
-        address = site.get("address", "N/A")
-
-        col1, col2 = st.columns([6, 1])
-
-        with col1:
-            st.write(f"**Address:** {address}")
-
-        with col2:
-            if st.button("📋 Copy", key=f"copy_{key}"):
-                st.toast("📍 Address copied!", icon="✅")
-
-                components.html(
-                    f"""
-                    <script>
-                        navigator.clipboard.writeText("{address}");
-                    </script>
-                    """,
-                    height=0,
-                )
-
-        # -------------------------------------------------
-        # Provider
-        # -------------------------------------------------
-        st.write(f"**Provider:** {site['provider']}")
-
-        st.link_button(
-            "🔗 Open Provider Outage Page",
-            site["url"]
+    # ---------------- Clipboard JS (isolated + stable)
+    if st.session_state.copy_trigger:
+        components.html(
+            f"""
+            <script>
+                navigator.clipboard.writeText("{address}");
+            </script>
+            """,
+            height=0
         )
+        st.toast("📍 Address copied!", icon="✅")
+        st.session_state.copy_trigger = False
 
-        # -------------------------------------------------
-        # Auto-check power status
-        # -------------------------------------------------
-        if st.button("🔍 Auto-Check Power Status", use_container_width=True):
-            with st.spinner("Checking live outage map..."):
-                result = check_power_status(
-                    site["url"],
-                    site["address"],
-                    site.get("search"),
-                    site.get("provider", "")
-                )
+    st.write(f"**Provider:** {site['provider']}")
+    st.link_button("🔗 Open Provider Outage Page", site["url"])
 
-            if not result["found"]:
-                st.warning("⚠️ Could not auto-detect location. Verify manually.")
-            else:
-                if result["status"] == "OUTAGE":
-                    st.error(f"⚡ POWER OUTAGE ({result['type']})")
-                elif result["status"] == "OUTAGES":
-                    st.error(f"⚡ MULTIPLE POWER OUTAGES ({result['type']})")
-                else:
-                    st.success("✅ No confirmed outage detected")
-    else:
-        st.error("❌ Location not found in database")
+    if st.button("🔍 Auto-Check Power Status", use_container_width=True):
+        with st.spinner("Checking live outage map..."):
+            result = check_power_status(
+                site["url"],
+                address,
+                site.get("search"),
+                site.get("provider","")
+            )
+
+        if not result["found"]:
+            st.warning("⚠️ Could not auto-detect location.")
+        elif result["status"] in ["OUTAGE","OUTAGES"]:
+            st.error(f"⚡ {result['status']} ({result['type']})")
+        else:
+            st.success("✅ No confirmed outage detected")
