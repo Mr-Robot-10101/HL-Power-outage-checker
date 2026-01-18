@@ -1,7 +1,6 @@
 import json
 import streamlit as st
 import streamlit.components.v1 as components
-from selenium_checker import check_power_status  # (kept if needed later)
 
 # -------------------------------------------------
 # Page config
@@ -14,85 +13,89 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 🎨 Custom Brand Theme + Provider Buttons (CSS)
+# 🎨 PREMIUM UX/UI THEME
 # -------------------------------------------------
 st.markdown(
     """
     <style>
-    /* App background */
+    /* ---------- Global ---------- */
     .stApp {
-        background-color: #0f172a;
+        background: radial-gradient(circle at top, #0f172a, #020617);
         color: #e5e7eb;
     }
 
-    /* Sidebar */
+    /* ---------- Sidebar ---------- */
     section[data-testid="stSidebar"] {
-        background-color: #020617;
+        background: linear-gradient(180deg, #020617, #020617);
     }
 
     section[data-testid="stSidebar"] button {
-        background-color: #2563eb;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 10px;
+        background: #020617;
+        color: #e5e7eb;
+        border: 1px solid #1f2937;
+        border-radius: 12px;
+        padding: 12px;
         font-weight: 500;
+        transition: all 0.2s ease;
     }
 
     section[data-testid="stSidebar"] button:hover {
-        background-color: #1d4ed8;
+        background: #1f6feb;
+        color: white;
+        border-color: #1f6feb;
+        transform: translateY(-1px);
     }
 
-    /* Alerts */
-    .stAlert {
-        border-radius: 14px;
+    /* ---------- Card ---------- */
+    .card {
+        background: rgba(2, 6, 23, 0.75);
+        border: 1px solid #1f2937;
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
 
-    /* ---------------- Provider button styles ---------------- */
+    /* ---------- Provider Button ---------- */
     .provider-link-btn a {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 10px 18px;
+        padding: 12px 22px;
         border-radius: 999px;
-        color: #ffffff !important;
-        text-decoration: none;
+        color: #fff !important;
         font-weight: 600;
-        font-size: 14px;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-        transition: all 0.25s ease;
+        text-decoration: none;
+        box-shadow: 0 8px 24px rgba(0,0,0,.45);
+        transition: all .25s ease;
     }
 
-    /* Jemena - Green */
+    .provider-link-btn a:hover {
+        transform: translateY(-2px) scale(1.02);
+    }
+
     .provider-jemena a {
         background: linear-gradient(90deg, #16a34a, #22c55e);
     }
-    .provider-jemena a:hover {
-        box-shadow: 0 8px 22px rgba(34,197,94,0.55);
-        transform: translateY(-1px);
-    }
 
-    /* Powercor - Blue */
     .provider-powercor a {
         background: linear-gradient(90deg, #2563eb, #1d4ed8);
     }
-    .provider-powercor a:hover {
-        box-shadow: 0 8px 22px rgba(37,99,235,0.55);
-        transform: translateY(-1px);
-    }
 
-    /* AusNet - Purple */
     .provider-ausnet a {
         background: linear-gradient(90deg, #7c3aed, #9333ea);
     }
-    .provider-ausnet a:hover {
-        box-shadow: 0 8px 22px rgba(147,51,234,0.55);
-        transform: translateY(-1px);
-    }
 
-    /* Default */
     .provider-default a {
         background: linear-gradient(90deg, #1f6feb, #2563eb);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 768px) {
+        .provider-link-btn a {
+            width: 100%;
+            justify-content: center;
+        }
     }
     </style>
     """,
@@ -114,11 +117,11 @@ if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
 
 # -------------------------------------------------
-# Sidebar – Locations
+# Sidebar
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("## ⚡ Locations")
-    st.caption("Tap a location to auto-fill")
+    st.caption("📌 Select a site to view details")
 
     for loc in locations_list:
         if st.button(loc.title(), use_container_width=True, key=f"loc_{loc}"):
@@ -130,10 +133,10 @@ with st.sidebar:
 # -------------------------------------------------
 st.markdown(
     """
-    <div style="text-align:center;">
-        <h1 style="margin-bottom:4px;">⚡ Power Outage Checker</h1>
-        <p style="opacity:0.75;">
-            Auto-check power status using live provider outage maps
+    <div style="text-align:center;margin-bottom:16px;">
+        <h1>⚡ Power Outage Checker</h1>
+        <p style="opacity:.75">
+            Quickly access provider outage pages for each site
         </p>
     </div>
     """,
@@ -141,12 +144,18 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# Location input
+# Input
 # -------------------------------------------------
 location = st.text_input(
     "📍 Enter Location / Suburb",
     value=st.session_state.selected_location
 )
+
+# -------------------------------------------------
+# Empty state
+# -------------------------------------------------
+if not location:
+    st.info("👈 Select a location from the sidebar to begin")
 
 # -------------------------------------------------
 # Main view
@@ -155,21 +164,21 @@ if location and location.lower() in SITES:
     site = SITES[location.lower()]
     address = site.get("address", "N/A")
 
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+
     st.success(
         f"📍 **{site['site']}**\n\n"
         f"👤 **Customer:** {site.get('customer', 'N/A')}"
     )
 
-    # -------------------------------------------------
-    # Address (WHITE) + HTML Copy button (NO rerun)
-    # -------------------------------------------------
+    # Address + Copy (NO rerun, browser-only)
     components.html(
         f"""
         <div style="
             display:flex;
             align-items:center;
             gap:12px;
-            margin:10px 0;
+            margin:12px 0;
         ">
             <div style="
                 font-weight:600;
@@ -181,7 +190,7 @@ if location and location.lower() in SITES:
 
             <button
                 style="
-                    padding:6px 12px;
+                    padding:6px 14px;
                     border-radius:8px;
                     border:none;
                     background:#2563eb;
@@ -191,8 +200,8 @@ if location and location.lower() in SITES:
                 "
                 onclick="
                     navigator.clipboard.writeText('{address}');
-                    this.innerText='✓ Copied';
-                    this.style.background='#16a34a';
+                    this.innerText='✔ Copied';
+                    setTimeout(()=>this.innerText='📋 Copy',1500);
                 "
             >
                 📋 Copy
@@ -202,12 +211,8 @@ if location and location.lower() in SITES:
         height=60,
     )
 
-    # -------------------------------------------------
-    # Provider
-    # -------------------------------------------------
     st.write(f"**Provider:** {site['provider']}")
 
-    # Provider-based color class
     provider_name = site["provider"].lower()
     if "jemena" in provider_name:
         provider_class = "provider-jemena"
@@ -218,9 +223,6 @@ if location and location.lower() in SITES:
     else:
         provider_class = "provider-default"
 
-    # -------------------------------------------------
-    # Styled Provider Outage Page button
-    # -------------------------------------------------
     st.markdown(
         f"""
         <div class="provider-link-btn {provider_class}">
@@ -231,6 +233,8 @@ if location and location.lower() in SITES:
         """,
         unsafe_allow_html=True
     )
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 elif location:
     st.error("❌ Location not found in database")
