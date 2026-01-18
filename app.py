@@ -115,7 +115,7 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# 3. Load Data & State
+# 3. Load Data
 # -------------------------------------------------
 try:
     with open("sites.json", "r", encoding="utf-8") as f:
@@ -124,9 +124,11 @@ except FileNotFoundError:
     SITES = {}
     st.error("⚠️ sites.json file not found!")
 
-# Session State
-if "selected_loc" not in st.session_state:
-    st.session_state.selected_loc = ""
+locations_list = list(SITES.keys())
+
+# Session state
+if "selected_location" not in st.session_state:
+    st.session_state.selected_location = ""
 
 # -------------------------------------------------
 # 4. Sidebar
