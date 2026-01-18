@@ -30,29 +30,63 @@ st.markdown(
         color: white;
     }
 
-    /* ---------------- Sidebar Styling ---------------- */
+    /* --- SIDEBAR STYLING (1st Image Look) --- */
+    
     section[data-testid="stSidebar"] {
         background-color: #0b0f19;
         border-right: 1px solid rgba(255,255,255,0.05);
     }
-    
-    /* Sidebar Buttons */
-    section[data-testid="stSidebar"] button {
-        background-color: transparent;
-        color: #94a3b8;
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        text-align: left;
-        padding-left: 15px;
+
+    /* Sidebar Header Text */
+    section[data-testid="stSidebar"] h3 {
+        color: #f1f5f9;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
     }
 
+    /* Sidebar Buttons - Solid Box & Centered Text */
+    section[data-testid="stSidebar"] button {
+        background-color: rgba(30, 41, 59, 0.8) !important; /* Solid Dark Background */
+        color: #cbd5e1 !important;
+        
+        /* Box Styling */
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 8px !important;
+        width: 100% !important;
+        margin-bottom: 8px !important;
+        padding: 12px 0 !important;
+        
+        /* Text Alignment - Center Everything */
+        text-align: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        
+        /* Font Styling */
+        font-weight: 500 !important;
+        font-size: 0.95rem !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+
+    /* Ensure text inside button is centered */
+    section[data-testid="stSidebar"] button p {
+        text-align: center !important;
+        width: 100%;
+        margin: 0;
+    }
+
+    /* Hover Effect */
     section[data-testid="stSidebar"] button:hover {
-        background-color: #2563eb;
-        color: white;
-        border-color: #2563eb;
-        transform: translateX(5px);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        background-color: rgba(59, 130, 246, 0.2) !important; /* Blue tint */
+        border-color: #3b82f6 !important;
+        color: white !important;
+        transform: translateY(-1px);
+    }
+
+    /* Active/Focus Effect */
+    section[data-testid="stSidebar"] button:focus {
+        border-color: #60a5fa !important;
+        background-color: rgba(37, 99, 235, 0.3) !important;
     }
 
     /* --- MAIN CONTENT STYLING --- */
@@ -115,7 +149,7 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# 3. Load Data
+# 3. Load Data & State
 # -------------------------------------------------
 try:
     with open("sites.json", "r", encoding="utf-8") as f:
@@ -124,23 +158,21 @@ except FileNotFoundError:
     SITES = {}
     st.error("⚠️ sites.json file not found!")
 
-locations_list = list(SITES.keys())
-
-# Session state
-if "selected_location" not in st.session_state:
-    st.session_state.selected_location = ""
+# Session State
+if "selected_loc" not in st.session_state:
+    st.session_state.selected_loc = ""
 
 # -------------------------------------------------
-# 4. Sidebar
+# 4. SIDEBAR (Buttons)
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("### 🗺️ Locations")
-    st.caption("Quick Select")
+    st.markdown("<div style='margin-bottom:15px; color:#64748b; font-size:0.9rem;'>Quick Select</div>", unsafe_allow_html=True)
     
-    # Add a little scrollable area styling if list is long
-    for loc in locations_list:
-        if st.button(loc.title(), use_container_width=True, key=f"loc_{loc}"):
-            st.session_state.selected_location = loc
+    # Loop to create buttons
+    for loc in SITES.keys():
+        if st.button(loc.title(), key=f"btn_{loc}"):
+            st.session_state.selected_loc = loc
             st.rerun()
 
 # -------------------------------------------------
