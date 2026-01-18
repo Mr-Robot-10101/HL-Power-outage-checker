@@ -8,11 +8,12 @@ import streamlit.components.v1 as components
 st.set_page_config(
     page_title="Power Outage Checker",
     page_icon="⚡",
-    layout="centered"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 # -------------------------------------------------
-# 🎨 Modern UI Theme (Glass + Soft Glow)
+# 🎨 MODERN UI THEME (Glass + Soft Glow)
 # -------------------------------------------------
 st.markdown(
     """
@@ -23,6 +24,28 @@ st.markdown(
         color: #e5e7eb;
     }
 
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #020617, #020617);
+    }
+
+    section[data-testid="stSidebar"] button {
+        background: #020617;
+        color: #e5e7eb;
+        border: 1px solid #1f2937;
+        border-radius: 12px;
+        padding: 12px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    section[data-testid="stSidebar"] button:hover {
+        background: #1f6feb;
+        color: white;
+        border-color: #1f6feb;
+        transform: translateY(-1px);
+    }
+
     /* Header */
     .app-title {
         font-size: 44px;
@@ -31,6 +54,7 @@ st.markdown(
         text-align: center;
         margin-bottom: 6px;
     }
+
     .app-subtitle {
         text-align: center;
         opacity: .75;
@@ -69,6 +93,7 @@ st.markdown(
         color: #ffffff;
         flex-wrap: wrap;
     }
+
     .copy-btn {
         padding: 6px 14px;
         border-radius: 999px;
@@ -79,6 +104,7 @@ st.markdown(
         font-weight: 600;
         transition: all .25s ease;
     }
+
     .copy-btn:hover {
         transform: translateY(-1px);
         box-shadow: 0 6px 18px rgba(37,99,235,.45);
@@ -98,6 +124,7 @@ st.markdown(
         transition: all .25s ease;
         margin-top: 6px;
     }
+
     .provider-btn:hover { transform: translateY(-2px); }
 
     .jemena { background: linear-gradient(90deg, #16a34a, #22c55e); }
@@ -119,6 +146,26 @@ st.markdown(
 with open("sites.json", "r", encoding="utf-8") as f:
     SITES = json.load(f)
 
+locations_list = list(SITES.keys())
+
+# -------------------------------------------------
+# Session state
+# -------------------------------------------------
+if "selected_location" not in st.session_state:
+    st.session_state.selected_location = ""
+
+# -------------------------------------------------
+# Sidebar (RESTORED ✅)
+# -------------------------------------------------
+with st.sidebar:
+    st.markdown("## ⚡ Locations")
+    st.caption("Tap a location to auto-fill")
+
+    for loc in locations_list:
+        if st.button(loc.title(), use_container_width=True, key=f"loc_{loc}"):
+            st.session_state.selected_location = loc
+            st.rerun()
+
 # -------------------------------------------------
 # Header
 # -------------------------------------------------
@@ -135,7 +182,10 @@ st.markdown(
 # -------------------------------------------------
 # Input
 # -------------------------------------------------
-location = st.text_input("📍 Enter Location / Suburb")
+location = st.text_input(
+    "📍 Enter Location / Suburb",
+    value=st.session_state.selected_location
+)
 
 # -------------------------------------------------
 # Main
@@ -152,7 +202,7 @@ if location and location.lower() in SITES:
         f"👤 **Customer:** {site.get('customer', 'N/A')}"
     )
 
-    # Address + Copy (browser-only, no rerun)
+    # Address + Copy (NO rerun)
     components.html(
         f"""
         <div class="address-row">
@@ -195,3 +245,5 @@ if location and location.lower() in SITES:
 
 elif location:
     st.error("❌ Location not found in database")
+else:
+    st.info("👈 Select a location from the sidebar to begin")
