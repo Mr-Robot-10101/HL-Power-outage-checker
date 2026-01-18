@@ -1,6 +1,5 @@
 import json
 import streamlit as st
-import pyperclip
 from selenium_checker import check_power_status
 
 # -------------------------------------------------
@@ -56,7 +55,7 @@ if location:
         )
 
         # -------------------------------------------------
-        # Address + Copy button + Toast
+        # Address + Copy + Toast (JS clipboard)
         # -------------------------------------------------
         address = site.get("address", "N/A")
 
@@ -67,8 +66,16 @@ if location:
 
         with col2:
             if st.button("📋 Copy"):
-                pyperclip.copy(address)
                 st.toast("📍 Address copied!", icon="✅")
+
+                st.markdown(
+                    f"""
+                    <script>
+                        navigator.clipboard.writeText("{address}");
+                    </script>
+                    """,
+                    unsafe_allow_html=True
+                )
 
         # -------------------------------------------------
         # Provider
