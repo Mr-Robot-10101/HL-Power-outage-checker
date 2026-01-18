@@ -44,28 +44,29 @@ st.markdown(
         margin-bottom: 10px;
     }
 
-    /* Sidebar Buttons - Solid Box & Centered Text */
+/* ---------------- Sidebar Styling ---------------- */
+    section[data-testid="stSidebar"] {
+        background-color: #0b0f19;
+        border-right: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    /* Sidebar Buttons */
     section[data-testid="stSidebar"] button {
-        background-color: rgba(30, 41, 59, 0.8) !important; /* Solid Dark Background */
-        color: #cbd5e1 !important;
-        
-        /* Box Styling */
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 8px !important;
-        width: 100% !important;
-        margin-bottom: 8px !important;
-        padding: 15px 20 !important;
-        
-        /* Text Alignment - Center Everything */
-        text-align: center !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        
-        /* Font Styling */
-        font-weight: 500 !important;
-        font-size: 0.95rem !important;
-        transition: all 0.2s ease-in-out !important;
+        background-color: transparent;
+        color: #94a3b8;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-align: left;
+        padding-left: 15px;
+    }
+
+    section[data-testid="stSidebar"] button:hover {
+        background-color: #2563eb;
+        color: white;
+        border-color: #2563eb;
+        transform: translateX(5px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     }
 
     /* Ensure text inside button is centered */
