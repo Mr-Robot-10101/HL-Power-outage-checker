@@ -2,17 +2,17 @@ import json
 import streamlit as st
 
 # -------------------------------------------------
-# 1. Page Config (මූලික සැකසුම්)
+# 1. Page Config (පිටුවේ මූලික සැකසුම්)
 # -------------------------------------------------
 st.set_page_config(
     page_title="Power Check",
     page_icon="⚡",
-    layout="centered", # මැදට වෙන්න ලස්සනට පෙන්වීමට
+    layout="centered",
     initial_sidebar_state="expanded"
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (සම්පූර්ණ මෝස්තරය)
+# 2. 🎨 CSS Styles (සම්පූර්ණ Design එක)
 # -------------------------------------------------
 st.markdown(
     """
@@ -24,44 +24,74 @@ st.markdown(
         font-family: 'Inter', sans-serif;
     }
 
-    /* Main Background Gradient */
+    /* Main Background */
     .stApp {
         background: radial-gradient(125% 125% at 50% 10%, #020617 40%, #1e1b4b 100%);
         color: white;
     }
 
-    /* --- SIDEBAR STYLING --- */
+    /* --- SIDEBAR STYLING (1st Image Look) --- */
+    
     section[data-testid="stSidebar"] {
         background-color: #0b0f19;
         border-right: 1px solid rgba(255,255,255,0.05);
     }
-    
-    /* Sidebar Buttons Design */
-    section[data-testid="stSidebar"] button {
-        background-color: transparent;
-        color: #cbd5e1;
-        border: 1px solid rgba(255,255,255,0.12); /* සිහින් රාමුව */
-        border-radius: 8px;
-        margin-bottom: 8px;
-        width: 100%; /* Sidebar එක පුරාම විහිදෙන්න */
-        padding: 10px 15px;
-        text-align: center;
-        transition: all 0.2s ease;
-        font-weight: 500;
-        font-size: 0.95rem;
+
+    /* Sidebar Header Text */
+    section[data-testid="stSidebar"] h3 {
+        color: #f1f5f9;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
     }
 
-    /* Sidebar Hover Effect */
+    /* Sidebar Buttons - Solid Box & Centered Text */
+    section[data-testid="stSidebar"] button {
+        background-color: rgba(30, 41, 59, 0.8) !important; /* Solid Dark Background */
+        color: #cbd5e1 !important;
+        
+        /* Box Styling */
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 8px !important;
+        width: 100% !important;
+        margin-bottom: 8px !important;
+        padding: 12px 0 !important;
+        
+        /* Text Alignment - Center Everything */
+        text-align: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        
+        /* Font Styling */
+        font-weight: 500 !important;
+        font-size: 0.95rem !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+
+    /* Ensure text inside button is centered */
+    section[data-testid="stSidebar"] button p {
+        text-align: center !important;
+        width: 100%;
+        margin: 0;
+    }
+
+    /* Hover Effect */
     section[data-testid="stSidebar"] button:hover {
-        background-color: rgba(59, 130, 246, 0.15);
-        color: #60a5fa;
-        border-color: #3b82f6;
-        transform: translateY(-2px);
+        background-color: rgba(59, 130, 246, 0.2) !important; /* Blue tint */
+        border-color: #3b82f6 !important;
+        color: white !important;
+        transform: translateY(-1px);
+    }
+
+    /* Active/Focus Effect */
+    section[data-testid="stSidebar"] button:focus {
+        border-color: #60a5fa !important;
+        background-color: rgba(37, 99, 235, 0.3) !important;
     }
 
     /* --- MAIN CONTENT STYLING --- */
     
-    /* Input Field - Full Width & Modern */
+    /* Input Field */
     .stTextInput input {
         background-color: rgba(255,255,255,0.08) !important;
         color: white !important;
@@ -75,18 +105,18 @@ st.markdown(
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3) !important;
     }
 
-    /* Result Card Styling */
+    /* Result Card */
     .result-header {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 16px;
-        padding: 30px; /* ඇතුලත ඉඩ වැඩි කළා */
+        padding: 30px;
         text-align: center;
         backdrop-filter: blur(10px);
         margin-bottom: 20px;
         box-shadow: 0 4px 25px rgba(0,0,0,0.4);
     }
-    
+
     /* Status Badge */
     .status-badge {
         display: inline-block;
@@ -100,7 +130,7 @@ st.markdown(
         margin-bottom: 15px;
     }
 
-    /* Typography */
+    /* Site Name Typography */
     .site-name {
         font-size: 2.5rem;
         font-weight: 800;
@@ -110,7 +140,7 @@ st.markdown(
         -webkit-text-fill-color: transparent;
     }
 
-    /* Remove Default Elements */
+    /* Remove Footer */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     </style>
@@ -119,37 +149,38 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# 3. Load Data & Session State
+# 3. Load Data & State
 # -------------------------------------------------
 try:
     with open("sites.json", "r", encoding="utf-8") as f:
         SITES = json.load(f)
 except FileNotFoundError:
     SITES = {}
+    st.error("⚠️ sites.json file not found!")
 
-# Session State Initialisation
+# Session State
 if "selected_loc" not in st.session_state:
     st.session_state.selected_loc = ""
 
 # -------------------------------------------------
-# 4. SIDEBAR LOGIC (Quick Select Buttons)
+# 4. SIDEBAR (Buttons)
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("### 🗺️ Locations")
     st.markdown("<div style='margin-bottom:15px; color:#64748b; font-size:0.9rem;'>Quick Select</div>", unsafe_allow_html=True)
     
-    # Create buttons for each site
+    # Loop to create buttons
     for loc in SITES.keys():
         if st.button(loc.title(), key=f"btn_{loc}"):
             st.session_state.selected_loc = loc
             st.rerun()
 
 # -------------------------------------------------
-# 5. MAIN CONTENT AREA
+# 5. MAIN CONTENT
 # -------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Title
+# Main Title
 st.markdown(
     """
     <div style="text-align:center; margin-bottom: 40px;">
@@ -162,8 +193,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- SEARCH INPUT (Full Width - No Columns) ---
-# අපි මෙතන Columns භාවිතා නොකරන නිසා මෙය Screen එකේ මැද හරියටම පිරෙන්න එනවා.
+# Search Input (Full Width - No Columns)
 search_query = st.text_input(
     "Search Location", 
     value=st.session_state.selected_loc,
@@ -171,15 +201,14 @@ search_query = st.text_input(
     label_visibility="collapsed"
 )
 
-# --- RESULTS DISPLAY ---
+# Results Display
 if search_query:
     location_key = search_query.lower().strip()
     
     if location_key in SITES:
         site = SITES[location_key]
         
-        # Spacer
-        st.write("") 
+        st.write("") # Spacer
 
         # --- Info Card ---
         st.markdown(
@@ -195,15 +224,14 @@ if search_query:
             unsafe_allow_html=True
         )
 
-        # --- Address (Native Code Block for easy copy) ---
+        # --- Address ---
         st.caption("📍 SITE ADDRESS")
         st.code(site.get("address", "Address unavailable"), language="text")
 
-        # --- Provider Link Button ---
+        # --- Link Button ---
         st.write("") 
         provider_name = site['provider']
         
-        # 'use_container_width=True' මගින් Button එක සම්පූර්ණ පළලටම විහිදේ
         st.link_button(
             label=f"Check {provider_name} Status ➜",
             url=site['url'],
