@@ -28,31 +28,25 @@ st.markdown(
     }
 
     section[data-testid="stSidebar"] button {
-        background-color: #020617;
-        color: #e5e7eb;
-        border: 1px solid #1f2937;
+        background-color: #2563eb;
+        color: white;
+        border: none;
         border-radius: 10px;
         padding: 10px;
         font-weight: 500;
     }
 
     section[data-testid="stSidebar"] button:hover {
-        background-color: #1f6feb;
-        color: white;
-        border-color: #1f6feb;
+        background-color: #1d4ed8;
     }
 
     .stButton > button {
-        background: linear-gradient(90deg, #1f6feb, #2563eb);
+        background: linear-gradient(90deg, #2563eb, #1d4ed8);
         color: white;
         border-radius: 12px;
         border: none;
         padding: 10px 16px;
         font-weight: 600;
-    }
-
-    .stButton > button:hover {
-        background: linear-gradient(90deg, #2563eb, #1d4ed8);
     }
 
     .stAlert {
@@ -85,6 +79,9 @@ locations_list = [
 if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
 
+if "copy_address" not in st.session_state:
+    st.session_state.copy_address = False
+
 # -------------------------------------------------
 # Sidebar – Highlight selected
 # -------------------------------------------------
@@ -102,11 +99,10 @@ with st.sidebar:
                     padding:12px;
                     margin-bottom:8px;
                     border-radius:12px;
-                    background:linear-gradient(90deg,#1f6feb,#2563eb);
+                    background:linear-gradient(90deg,#2563eb,#1d4ed8);
                     color:white;
                     font-weight:700;
                     text-align:center;
-                    box-shadow:0 0 10px rgba(31,111,235,0.6);
                 ">
                     ⚡ {loc}
                 </div>
@@ -134,7 +130,7 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# Location input (auto-filled)
+# Location input
 # -------------------------------------------------
 location = st.text_input(
     "📍 Enter Location / Suburb",
@@ -157,7 +153,7 @@ if location:
         )
 
         # -------------------------------------------------
-        # Address + Copy + Toast (ADDED BLOCK ✅)
+        # Address + Copy (FIXED – no UI disappear)
         # -------------------------------------------------
         address = site.get("address", "N/A")
 
@@ -167,26 +163,26 @@ if location:
             st.write(f"**Address:** {address}")
 
         with col2:
-            if st.button("📋 Copy"):
+            if st.button("📋 Copy", key="copy_address_btn"):
+                st.session_state.copy_address = True
                 st.toast("📍 Address copied!", icon="✅")
 
-                st.markdown(
-                    f"""
-                    <script>
-                        navigator.clipboard.writeText("{address}");
-                    </script>
-                    """,
-                    unsafe_allow_html=True
-                )
+        if st.session_state.copy_address:
+            st.markdown(
+                f"""
+                <script>
+                    navigator.clipboard.writeText("{address}");
+                </script>
+                """,
+                unsafe_allow_html=True
+            )
+            st.session_state.copy_address = False
 
         # -------------------------------------------------
         # Provider
         # -------------------------------------------------
         st.write(f"**Provider:** {site['provider']}")
 
-        # -------------------------------------------------
-        # Provider link
-        # -------------------------------------------------
         st.link_button(
             "🔗 Open Provider Outage Page",
             site["url"]
