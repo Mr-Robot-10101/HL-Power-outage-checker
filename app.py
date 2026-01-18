@@ -13,32 +13,70 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 🎨 GLOBAL CSS (Animated background + Lightning pulse)
+# 🎨 MESH BACKGROUND + LIGHTNING PULSE
 # -------------------------------------------------
 st.markdown(
     """
     <style>
-    /* ---------------- App background animation ---------------- */
+    /* ---------- Base ---------- */
     .stApp {
-        background: linear-gradient(
-            -45deg,
-            #020617,
-            #0f172a,
-            #020617,
-            #111827
-        );
-        background-size: 400% 400%;
-        animation: gradientMove 18s ease infinite;
+        background-color: #020617;
         color: #e5e7eb;
+        overflow: hidden;
     }
 
-    @keyframes gradientMove {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    /* ---------- Mesh blobs ---------- */
+    .mesh-bg {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        overflow: hidden;
     }
 
-    /* ---------------- Sidebar ---------------- */
+    .blob {
+        position: absolute;
+        width: 480px;
+        height: 480px;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.45;
+        animation: float 22s infinite alternate ease-in-out;
+    }
+
+    .blob.blue {
+        background: #2563eb;
+        top: -120px;
+        left: -120px;
+        animation-delay: 0s;
+    }
+
+    .blob.purple {
+        background: #7c3aed;
+        top: 30%;
+        right: -150px;
+        animation-delay: 4s;
+    }
+
+    .blob.green {
+        background: #16a34a;
+        bottom: -160px;
+        left: 25%;
+        animation-delay: 8s;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px) translateX(0px) scale(1);
+        }
+        50% {
+            transform: translateY(-60px) translateX(40px) scale(1.15);
+        }
+        100% {
+            transform: translateY(40px) translateX(-30px) scale(0.95);
+        }
+    }
+
+    /* ---------- Sidebar ---------- */
     section[data-testid="stSidebar"] {
         background-color: #020617;
     }
@@ -46,8 +84,8 @@ st.markdown(
     section[data-testid="stSidebar"] button {
         background-color: #2563eb;
         color: white;
-        border: none;
         border-radius: 10px;
+        border: none;
         padding: 10px;
         font-weight: 500;
         transition: all 0.2s ease;
@@ -58,76 +96,55 @@ st.markdown(
         transform: translateY(-1px);
     }
 
-    /* ---------------- Lightning pulse ---------------- */
+    /* ---------- Lightning pulse ---------- */
     .lightning {
         display: inline-block;
-        margin-right: 6px;
-        animation: lightningPulse 2.8s ease-in-out infinite;
-        text-shadow:
-            0 0 6px rgba(250,204,21,0.6),
-            0 0 14px rgba(250,204,21,0.35);
+        animation: pulse 2.6s ease-in-out infinite;
+        text-shadow: 0 0 14px rgba(250,204,21,0.8);
     }
 
-    @keyframes lightningPulse {
-        0% {
-            transform: scale(1);
-            opacity: 0.9;
-        }
-        50% {
-            transform: scale(1.15);
-            opacity: 1;
-            text-shadow:
-                0 0 10px rgba(250,204,21,0.9),
-                0 0 24px rgba(250,204,21,0.55);
-        }
-        100% {
-            transform: scale(1);
-            opacity: 0.9;
-        }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.9; }
+        50% { transform: scale(1.18); opacity: 1; }
     }
 
-    /* ---------------- Provider buttons ---------------- */
-    .provider-link-btn a {
+    /* ---------- Provider buttons ---------- */
+    .provider-btn a {
         display: inline-flex;
         align-items: center;
         gap: 8px;
         padding: 12px 22px;
         border-radius: 999px;
-        color: #ffffff !important;
-        text-decoration: none;
         font-weight: 600;
-        font-size: 14px;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+        text-decoration: none;
+        color: white !important;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.35);
         transition: all 0.25s ease;
     }
 
-    .provider-jemena a {
-        background: linear-gradient(90deg, #16a34a, #22c55e);
-    }
+    .jemena a { background: linear-gradient(90deg,#16a34a,#22c55e); }
+    .powercor a { background: linear-gradient(90deg,#2563eb,#1d4ed8); }
+    .ausnet a { background: linear-gradient(90deg,#7c3aed,#9333ea); }
+    .default a { background: linear-gradient(90deg,#1f6feb,#2563eb); }
 
-    .provider-powercor a {
-        background: linear-gradient(90deg, #2563eb, #1d4ed8);
-    }
-
-    .provider-ausnet a {
-        background: linear-gradient(90deg, #7c3aed, #9333ea);
-    }
-
-    .provider-default a {
-        background: linear-gradient(90deg, #1f6feb, #2563eb);
-    }
-
-    .provider-link-btn a:hover {
+    .provider-btn a:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.45);
     }
     </style>
+
+    <!-- Mesh background HTML -->
+    <div class="mesh-bg">
+        <div class="blob blue"></div>
+        <div class="blob purple"></div>
+        <div class="blob green"></div>
+    </div>
     """,
     unsafe_allow_html=True
 )
 
 # -------------------------------------------------
-# Load sites database
+# Load sites
 # -------------------------------------------------
 with open("sites.json", "r", encoding="utf-8") as f:
     SITES = json.load(f)
@@ -135,32 +152,30 @@ with open("sites.json", "r", encoding="utf-8") as f:
 locations_list = list(SITES.keys())
 
 # -------------------------------------------------
-# Session state
+# Session
 # -------------------------------------------------
 if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
 
 # -------------------------------------------------
-# Sidebar – Locations
+# Sidebar
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("## ⚡ Locations")
-    st.caption("Tap a location to auto-fill")
+    st.caption("Tap to auto-fill")
 
     for loc in locations_list:
-        if st.button(loc.title(), use_container_width=True, key=f"loc_{loc}"):
+        if st.button(loc.title(), use_container_width=True):
             st.session_state.selected_location = loc
             st.rerun()
 
 # -------------------------------------------------
-# Header with lightning pulse
+# Header
 # -------------------------------------------------
 st.markdown(
     """
     <div style="text-align:center; margin-bottom:20px;">
-        <h1>
-            <span class="lightning">⚡</span> Power Outage Checker
-        </h1>
+        <h1><span class="lightning">⚡</span> Power Outage Checker</h1>
         <p style="opacity:0.75;">
             Auto-check power status using live provider outage maps
         </p>
@@ -170,7 +185,7 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# Location input
+# Input
 # -------------------------------------------------
 location = st.text_input(
     "📍 Enter Location / Suburb",
@@ -178,7 +193,7 @@ location = st.text_input(
 )
 
 # -------------------------------------------------
-# Main content
+# Main
 # -------------------------------------------------
 if location and location.lower() in SITES:
     site = SITES[location.lower()]
@@ -186,61 +201,41 @@ if location and location.lower() in SITES:
 
     st.success(
         f"📍 **{site['site']}**\n\n"
-        f"👤 **Customer:** {site.get('customer', 'N/A')}"
+        f"👤 **Customer:** {site.get('customer','N/A')}"
     )
 
-    # ---------------- Address + copy (NO rerun) ----------------
     components.html(
         f"""
-        <div style="display:flex; align-items:center; gap:12px; margin:10px 0;">
-            <div style="font-weight:600; color:#ffffff; font-size:16px;">
+        <div style="display:flex; gap:12px; align-items:center;">
+            <div style="font-weight:600; color:white;">
                 Address: {address}
             </div>
             <button
-                style="
-                    padding:6px 12px;
-                    border-radius:8px;
-                    border:none;
-                    background:#2563eb;
-                    color:white;
-                    cursor:pointer;
-                    font-weight:600;
-                "
-                onclick="
-                    navigator.clipboard.writeText('{address}');
-                    this.innerText='✓ Copied';
-                    this.style.background='#16a34a';
-                "
-            >
+                style="padding:6px 12px;border-radius:8px;border:none;
+                       background:#2563eb;color:white;font-weight:600;"
+                onclick="navigator.clipboard.writeText('{address}');
+                         this.innerText='✓ Copied';
+                         this.style.background='#16a34a';">
                 📋 Copy
             </button>
         </div>
         """,
-        height=60,
+        height=60
     )
 
     st.write(f"**Provider:** {site['provider']}")
 
-    provider_name = site["provider"].lower()
-    if "jemena" in provider_name:
-        provider_class = "provider-jemena"
-    elif "powercor" in provider_name:
-        provider_class = "provider-powercor"
-    elif "ausnet" in provider_name:
-        provider_class = "provider-ausnet"
-    else:
-        provider_class = "provider-default"
+    p = site["provider"].lower()
+    cls = "jemena" if "jemena" in p else "powercor" if "powercor" in p else "ausnet" if "ausnet" in p else "default"
 
     st.markdown(
         f"""
-        <div class="provider-link-btn {provider_class}">
-            <a href="{site['url']}" target="_blank">
-                🔗 Open Provider Outage Page
-            </a>
+        <div class="provider-btn {cls}">
+            <a href="{site['url']}" target="_blank">🔗 Open Provider Outage Page</a>
         </div>
         """,
         unsafe_allow_html=True
     )
 
 elif location:
-    st.error("❌ Location not found in database")
+    st.error("❌ Location not found")
