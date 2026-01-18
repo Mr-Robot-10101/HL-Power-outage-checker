@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (MORE VISIBLE FLOATING CLOUDS)
+# 2. 🎨 CSS Styles (SHARPER CLOUDS - LESS BLUR, 80% OPACITY)
 # -------------------------------------------------
 st.markdown(
     """
@@ -36,24 +36,22 @@ st.markdown(
         width: 100vw;
         height: 100vh;
         z-index: -1;
-        /* Night Sky Gradient - Slightly brighter near horizon for contrast */
+        /* Night Sky Gradient */
         background: linear-gradient(to bottom, #020617 0%, #0f172a 50%, #1e293b 100%);
         overflow: hidden;
     }
 
-    /* --- MODIFIED CLOUD ANIMATION CSS (More Visible) --- */
+    /* --- SHARPER CLOUD ANIMATION CSS --- */
     
-    /* Cloud Shape Base - Increased Visibility */
+    /* Cloud Shape Base - Reduced Blur & Fixed Opacity */
     .cloud {
         position: absolute;
-        /* Increased white opacity (from 0.08 to 0.15) */
-        background: rgba(255, 255, 255, 0.15); 
+        background: rgba(255, 255, 255, 0.2); /* Slightly brighter inner color */
         border-radius: 100px;
-        /* Reduced blur slightly (from 30px to 20px) for better definition */
-        filter: blur(20px); 
+        /* --- MAIN CHANGES HERE --- */
+        filter: blur(8px); /* Blur එක 20px සිට 8px දක්වා අඩු කළා (Sharper) */
+        opacity: 0.8; /* Opacity එක 80% ලෙස සැකසුවා */
         z-index: 0;
-        /* Increased overall opacity */
-        opacity: 0.9;
     }
 
     /* Cloud Layer 1 (Top, Slow, Long) */
@@ -71,31 +69,29 @@ st.markdown(
         left: -800px;
         animation: drift 40s linear infinite;
         animation-delay: -10s;
-        /* A bit brighter than base */
-        background: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.22);
     }
 
-    /* Cloud Layer 3 (Bottom, Fast, Brighter puff) */
+    /* Cloud Layer 3 (Bottom, Fast, Brightest & Sharpest) */
     .c3 {
         width: 450px; height: 120px;
         top: 65%;
         left: -450px;
         animation: drift 28s linear infinite;
         animation-delay: -5s;
-        /* Brightest cloud chunk */
-        background: rgba(255, 255, 255, 0.22);
-        filter: blur(15px); /* Less blurred */
+        background: rgba(255, 255, 255, 0.25);
+        filter: blur(5px); /* ඉතාමත් අඩු Blur එකක් (ඉතා පැහැදිලියි) */
     }
     
-    /* Cloud Layer 4 (Background Detail) */
+    /* Cloud Layer 4 (Background Detail - Slightly blurrier for depth) */
     .c4 {
         width: 350px; height: 90px;
         top: 25%;
         left: -350px;
         animation: drift 55s linear infinite;
         animation-delay: -25s;
-        filter: blur(25px); /* More blurred for depth */
-        opacity: 0.7;
+        filter: blur(12px); /* පසුබිම නිසා මදක් Blur වැඩියි */
+        opacity: 0.6;
     }
 
     @keyframes drift {
