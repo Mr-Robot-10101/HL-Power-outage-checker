@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles & LIGHTNING STORM ANIMATION
+# 2. 🎨 CSS Styles (Rain Only - No Lightning)
 # -------------------------------------------------
 st.markdown(
     """
@@ -28,7 +28,7 @@ st.markdown(
         background: transparent !important;
     }
 
-    /* --- STORM BACKGROUND ANIMATION --- */
+    /* --- RAIN BACKGROUND CONTAINER --- */
     #bg-animation {
         position: fixed;
         top: 0;
@@ -36,32 +36,12 @@ st.markdown(
         width: 100vw;
         height: 100vh;
         z-index: -1;
-        background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%); /* Dark Stormy Sky */
+        /* Dark Stormy Blue Gradient (No Flashing) */
+        background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%);
         overflow: hidden;
     }
 
-    /* Lightning Flash Effect */
-    #bg-animation::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background-color: rgba(255, 255, 255, 0.15); /* White Flash */
-        opacity: 0;
-        animation: lightning 6s infinite; /* Flashes every 6 seconds */
-        pointer-events: none;
-        z-index: 1;
-    }
-
-    @keyframes lightning {
-        0% { opacity: 0; }
-        2% { opacity: 0.6; }  /* Big Flash */
-        4% { opacity: 0; }
-        6% { opacity: 0.3; }  /* Small After-flash */
-        8% { opacity: 0; }
-        100% { opacity: 0; }
-    }
-
-    /* Rain Animation */
+    /* Rain Animation Class */
     .rain {
         position: absolute;
         left: 0;
@@ -69,10 +49,11 @@ st.markdown(
         width: 100%;
         height: 100%;
         z-index: 0;
+        /* Rain Drop Gradient */
         background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
-        background-size: 2px 80px; /* Rain drop size */
-        animation: rain-fall 0.4s linear infinite;
-        opacity: 0.3;
+        background-size: 2px 80px; /* Width and Length of drops */
+        animation: rain-fall 0.4s linear infinite; /* Fast falling speed */
+        opacity: 0.3; /* Visibility of rain */
     }
 
     @keyframes rain-fall {
