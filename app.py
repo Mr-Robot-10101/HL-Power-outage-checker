@@ -8,150 +8,118 @@ import streamlit.components.v1 as components
 st.set_page_config(
     page_title="Power Outage Checker",
     page_icon="⚡",
-    layout="wide",              # Changed to wide → better for full backgrounds
+    layout="centered",
     initial_sidebar_state="expanded"
 )
 
 # -------------------------------------------------
-# Vanta.js Animated Background (RINGS) - FIXED VERSION
-# -------------------------------------------------
-vanta_background = """
-<!DOCTYPE html>
-<html style="height:100%; width:100%; margin:0; padding:0; overflow:hidden;">
-<head>
-  <meta charset="UTF-8">
-  <style>
-    html, body {
-      height: 100%;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      background: transparent !important;
-      overflow: hidden !important;
-    }
-    #vanta-bg {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -9999;
-      pointer-events: none;
-    }
-  </style>
-</head>
-<body style="background:transparent !important;">
-
-<div id="vanta-bg"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.rings.min.js"></script>
-
-<script>
-  let vantaEffect = null;
-  function initVanta() {
-    try {
-      vantaEffect = VANTA.RINGS({
-        el: "#vanta-bg",
-        THREE: THREE,  // explicit pass (sometimes helps)
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        
-        // Your screenshot-like colors
-        color: 0x88ff00,           // green rings
-        backgroundColor: 0x0a0e17, // darker navy/black
-        backgroundAlpha: 0.9,
-        amplitude: 1.5,
-        ringSize: 1.3,
-        showDots: true
-      });
-      console.log("Vanta initialized");
-    } catch(e) {
-      console.error("Vanta init failed:", e);
-    }
-  }
-
-  // Run immediately + on resize (Streamlit sometimes needs it)
-  initVanta();
-  window.addEventListener('resize', () => {
-    if (vantaEffect) vantaEffect.resize();
-  });
-
-  // Cleanup
-  window.addEventListener('beforeunload', () => {
-    if (vantaEffect) vantaEffect.destroy();
-  });
-</script>
-
-</body>
-</html>
-"""
-
-# Inject with height=0 (no space taken)
-components.html(vanta_background, height=0, scrolling=False)
-
-# -------------------------------------------------
-# Global CSS - Overlay for readability + remove forced backgrounds
+# 🎨 GLOBAL CSS (Animated background + Lightning pulse)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
-    /* Force main app & blocks transparent so Vanta shows through */
-    .stApp, .stApp > div:first-child, .block-container {
-        background: rgba(10, 14, 23, 0.62) !important;  /* semi-dark overlay - adjust 0.62 → 0.5 if too dark */
-        backdrop-filter: blur(4px) !important;
-        -webkit-backdrop-filter: blur(4px) !important;
-        color: #e5e7eb !important;
+    /* ---------------- App background animation ---------------- */
+    .stApp {
+        background: linear-gradient(
+            -45deg,
+            #020617,
+            #0f172a,
+            #020617,
+            #111827
+        );
+        background-size: 400% 400%;
+        animation: gradientMove 18s ease infinite;
+        color: #e5e7eb;
     }
 
-    /* Sidebar semi-transparent */
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* ---------------- Sidebar ---------------- */
     section[data-testid="stSidebar"] {
-        background: rgba(10, 14, 23, 0.78) !important;
-        backdrop-filter: blur(6px) !important;
+        background-color: #020617;
     }
 
-    /* Remove any forced white/gray from iframes or containers */
-    iframe {
-        background: transparent !important;
+    section[data-testid="stSidebar"] button {
+        background-color: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        font-weight: 500;
+        transition: all 0.2s ease;
     }
 
-    /* Lightning pulse */
+    section[data-testid="stSidebar"] button:hover {
+        background-color: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    /* ---------------- Lightning pulse ---------------- */
     .lightning {
         display: inline-block;
-        margin-right: 8px;
-        animation: lightningPulse 2.6s ease-in-out infinite;
-        text-shadow: 0 0 8px #facc15, 0 0 16px #facc15aa;
-    }
-    @keyframes lightningPulse {
-        0%, 100% { transform: scale(1); opacity: 0.92; }
-        50%      { transform: scale(1.14); opacity: 1;   }
+        margin-right: 6px;
+        animation: lightningPulse 2.8s ease-in-out infinite;
+        text-shadow:
+            0 0 6px rgba(250,204,21,0.6),
+            0 0 14px rgba(250,204,21,0.35);
     }
 
-    /* Provider buttons */
+    @keyframes lightningPulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.9;
+        }
+        50% {
+            transform: scale(1.15);
+            opacity: 1;
+            text-shadow:
+                0 0 10px rgba(250,204,21,0.9),
+                0 0 24px rgba(250,204,21,0.55);
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.9;
+        }
+    }
+
+    /* ---------------- Provider buttons ---------------- */
     .provider-link-btn a {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 12px 24px;
+        padding: 12px 22px;
         border-radius: 999px;
-        color: white !important;
+        color: #ffffff !important;
         text-decoration: none;
         font-weight: 600;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-        transition: all 0.25s;
+        font-size: 14px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+        transition: all 0.25s ease;
     }
-    .provider-jemena a    { background: linear-gradient(90deg, #16a34a, #22c55e); }
-    .provider-powercor a  { background: linear-gradient(90deg, #2563eb, #1d4ed8); }
-    .provider-ausnet a    { background: linear-gradient(90deg, #7c3aed, #9333ea); }
-    .provider-default a   { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+
+    .provider-jemena a {
+        background: linear-gradient(90deg, #16a34a, #22c55e);
+    }
+
+    .provider-powercor a {
+        background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    .provider-ausnet a {
+        background: linear-gradient(90deg, #7c3aed, #9333ea);
+    }
+
+    .provider-default a {
+        background: linear-gradient(90deg, #1f6feb, #2563eb);
+    }
 
     .provider-link-btn a:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 26px rgba(0,0,0,0.45);
     }
     </style>
     """,
@@ -173,25 +141,28 @@ if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
 
 # -------------------------------------------------
-# Sidebar
+# Sidebar – Locations
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("## ⚡ Locations")
-    st.caption("Tap to auto-fill")
+    st.caption("Tap a location to auto-fill")
+
     for loc in locations_list:
         if st.button(loc.title(), use_container_width=True, key=f"loc_{loc}"):
             st.session_state.selected_location = loc
             st.rerun()
 
 # -------------------------------------------------
-# Header
+# Header with lightning pulse
 # -------------------------------------------------
 st.markdown(
     """
-    <div style="text-align:center; margin: 0 0 24px 0;">
-        <h1><span class="lightning">⚡</span> Power Outage Checker</h1>
-        <p style="opacity:0.9; font-size:1.1rem;">
-            Check power status using live provider outage maps
+    <div style="text-align:center; margin-bottom:20px;">
+        <h1>
+            <span class="lightning">⚡</span> Power Outage Checker
+        </h1>
+        <p style="opacity:0.75;">
+            Auto-check power status using live provider outage maps
         </p>
     </div>
     """,
@@ -199,9 +170,12 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# Input
+# Location input
 # -------------------------------------------------
-location = st.text_input("📍 Enter Location / Suburb", value=st.session_state.selected_location)
+location = st.text_input(
+    "📍 Enter Location / Suburb",
+    value=st.session_state.selected_location
+)
 
 # -------------------------------------------------
 # Main content
@@ -210,42 +184,63 @@ if location and location.lower() in SITES:
     site = SITES[location.lower()]
     address = site.get("address", "N/A")
 
-    st.success(f"📍 **{site['site']}**  \n👤 **Customer:** {site.get('customer', 'N/A')}")
+    st.success(
+        f"📍 **{site['site']}**\n\n"
+        f"👤 **Customer:** {site.get('customer', 'N/A')}"
+    )
 
-    # Address copy
+    # ---------------- Address + copy (NO rerun) ----------------
     components.html(
         f"""
-        <div style="display:flex; align-items:center; gap:12px; margin:16px 0;">
-            <span style="font-weight:600; font-size:16px; color:#e5e7eb;">
+        <div style="display:flex; align-items:center; gap:12px; margin:10px 0;">
+            <div style="font-weight:600; color:#ffffff; font-size:16px;">
                 Address: {address}
-            </span>
-            <button style="padding:8px 16px; border-radius:10px; border:none; background:#2563eb; color:white; cursor:pointer; font-weight:600;"
-                    onclick="navigator.clipboard.writeText('{address}'); this.innerText='✓ Copied'; this.style.background='#16a34a'; setTimeout(()=>{{this.innerText='📋 Copy';this.style.background='#2563eb';}},1800);">
+            </div>
+            <button
+                style="
+                    padding:6px 12px;
+                    border-radius:8px;
+                    border:none;
+                    background:#2563eb;
+                    color:white;
+                    cursor:pointer;
+                    font-weight:600;
+                "
+                onclick="
+                    navigator.clipboard.writeText('{address}');
+                    this.innerText='✓ Copied';
+                    this.style.background='#16a34a';
+                "
+            >
                 📋 Copy
             </button>
         </div>
         """,
-        height=60
+        height=60,
     )
 
-    st.markdown(f"**Provider:** {site['provider']}")
+    st.write(f"**Provider:** {site['provider']}")
 
     provider_name = site["provider"].lower()
-    provider_class = (
-        "provider-jemena" if "jemena" in provider_name else
-        "provider-powercor" if "powercor" in provider_name else
-        "provider-ausnet" if "ausnet" in provider_name else
-        "provider-default"
-    )
+    if "jemena" in provider_name:
+        provider_class = "provider-jemena"
+    elif "powercor" in provider_name:
+        provider_class = "provider-powercor"
+    elif "ausnet" in provider_name:
+        provider_class = "provider-ausnet"
+    else:
+        provider_class = "provider-default"
 
     st.markdown(
         f"""
-        <div class="provider-link-btn {provider_class}" style="text-align:center; margin:28px 0;">
-            <a href="{site['url']}" target="_blank">🔗 Open Provider Outage Page</a>
+        <div class="provider-link-btn {provider_class}">
+            <a href="{site['url']}" target="_blank">
+                🔗 Open Provider Outage Page
+            </a>
         </div>
         """,
         unsafe_allow_html=True
     )
 
 elif location:
-    st.error("❌ Location not found")
+    st.error("❌ Location not found in database")
