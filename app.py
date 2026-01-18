@@ -12,24 +12,23 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles
+# 2. 🎨 CSS Styles (Sidebar Matching 1st Image + Electric Card)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
     
-    /* General Settings */
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
     }
 
-    /* Transparent App for Background Layer */
+    /* Transparent Background for Animation */
     .stApp {
         background: transparent !important;
     }
 
-    /* --- FIXED BACKGROUND ANIMATION (CSS) --- */
+    /* --- BACKGROUND ANIMATION --- */
     #bg-animation {
         position: fixed;
         top: 0;
@@ -48,46 +47,62 @@ st.markdown(
         100% { background-position: 0% 50%; }
     }
 
-    /* --- SIDEBAR STYLING --- */
+    /* --- SIDEBAR STYLING (MATCHING 1ST IMAGE) --- */
     section[data-testid="stSidebar"] {
-        background-color: rgba(11, 15, 25, 0.9);
+        background-color: #0b0f19; /* Very Dark Blue */
         border-right: 1px solid rgba(255,255,255,0.05);
-        backdrop-filter: blur(10px);
     }
     
     section[data-testid="stSidebar"] h3 {
         color: #f1f5f9;
         font-size: 1.1rem;
+        font-weight: 600;
         margin-bottom: 10px;
     }
 
+    /* Sidebar Buttons - Solid Box & Centered Text */
     section[data-testid="stSidebar"] button {
-        background-color: rgba(30, 41, 59, 0.95) !important;
-        color: #cbd5e1 !important;
+        background-color: #1e293b !important; /* Solid Dark Grey/Blue */
+        color: #e2e8f0 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px !important;
         margin-bottom: 8px !important;
         padding: 12px 0 !important;
         width: 100%;
+        
+        /* Force Centering */
         text-align: center !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
+        
         font-weight: 500 !important;
+        font-size: 0.95rem !important;
         transition: all 0.2s ease-in-out !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
 
+    /* Fix inner text alignment */
     section[data-testid="stSidebar"] button p {
         text-align: center !important;
         width: 100%;
         margin: 0;
     }
-    
+
+    /* Hover Effect */
     section[data-testid="stSidebar"] button:hover {
-        background-color: rgba(59, 130, 246, 0.3) !important;
+        background-color: #3b82f6 !important; /* Solid Blue on Hover */
         border-color: #3b82f6 !important;
         color: white !important;
-        transform: translateY(-2px);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    /* Active/Focus Effect */
+    section[data-testid="stSidebar"] button:focus {
+        background-color: #2563eb !important;
+        border-color: #60a5fa !important;
+        color: white !important;
     }
 
     /* -------------------------------------------------------
@@ -99,73 +114,61 @@ st.markdown(
       --electric-light-color: #fbd38d; 
     }
 
-    /* Card Container Wrapper */
     .electric-card-container {
         position: relative;
         width: 100%;
-        max-width: 500px;
-        margin: 20px auto;
+        max-width: 550px;
+        margin: 30px auto;
         padding: 2px;
         border-radius: 24px;
-        /* Using darker gradients to match the dark theme */
         background: linear-gradient(-30deg, rgba(221, 132, 72, 0.4), transparent, rgba(221, 132, 72, 0.4));
     }
 
     .inner-container {
         position: relative;
         border-radius: 24px;
-        background: rgba(15, 23, 42, 0.85); /* Dark background inside card */
+        background: rgba(15, 23, 42, 0.9); /* Darker background for contrast */
         z-index: 1;
-        overflow: hidden; /* Keeps content inside rounded corners */
+        overflow: hidden;
     }
 
-    /* Border Animation Layers */
     .border-outer {
         border: 2px solid rgba(221, 132, 72, 0.5);
         border-radius: 24px;
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
+        position: absolute; inset: 0; pointer-events: none;
     }
 
     .main-card {
-        width: 100%;
-        height: 100%;
+        width: 100%; height: 100%;
         border-radius: 24px;
         border: 2px solid var(--electric-border-color);
-        margin-top: -4px;
-        margin-left: -4px;
-        filter: url(#turbulent-displace); /* SVG Filter */
+        margin-top: -4px; margin-left: -4px;
+        filter: url(#turbulent-displace);
         pointer-events: none;
     }
 
-    /* Glows */
     .glow-layer-1 {
         border: 2px solid rgba(221, 132, 72, 0.6);
-        border-radius: 24px;
-        position: absolute; inset: 0;
+        border-radius: 24px; position: absolute; inset: 0;
         filter: blur(1px); pointer-events: none;
     }
 
     .glow-layer-2 {
         border: 2px solid var(--electric-light-color);
-        border-radius: 24px;
-        position: absolute; inset: 0;
+        border-radius: 24px; position: absolute; inset: 0;
         filter: blur(4px); pointer-events: none;
     }
 
     .background-glow {
         position: absolute; inset: 0;
         border-radius: 24px;
-        filter: blur(32px);
-        transform: scale(1.1);
-        opacity: 0.3;
+        filter: blur(40px);
+        opacity: 0.25;
         z-index: -1;
-        background: linear-gradient(-30deg, var(--electric-light-color), transparent, var(--electric-border-color));
+        background: radial-gradient(circle, var(--electric-border-color), transparent 70%);
         pointer-events: none;
     }
 
-    /* Content Layout */
     .content-container {
         position: relative;
         padding: 40px;
@@ -174,13 +177,12 @@ st.markdown(
         align-items: center;
         text-align: center;
         z-index: 10;
-        min-height: 350px;
+        min-height: 380px;
     }
 
-    /* Badge */
     .scrollbar-glass {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.3);
         border-radius: 14px;
         padding: 6px 16px;
         text-transform: uppercase;
@@ -191,7 +193,6 @@ st.markdown(
         display: inline-block;
     }
 
-    /* Typography */
     .card-title {
         font-size: 2.5rem;
         font-weight: 800;
@@ -203,7 +204,7 @@ st.markdown(
     
     .customer-info {
         color: #94a3b8;
-        font-size: 1rem;
+        font-size: 1.1rem;
         margin-top: 10px;
     }
     
@@ -211,10 +212,10 @@ st.markdown(
         font-family: monospace;
         color: #cbd5e1;
         background: rgba(0,0,0,0.3);
-        padding: 8px 12px;
-        border-radius: 6px;
-        font-size: 0.85rem;
-        margin-top: 15px;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        margin-top: 20px;
         display: inline-block;
         border: 1px solid rgba(255,255,255,0.1);
     }
@@ -223,31 +224,30 @@ st.markdown(
         border: none;
         height: 1px;
         background: rgba(255,255,255,0.15);
-        margin: 25px 0;
+        margin: 30px 0;
         width: 100%;
     }
 
-    /* Button */
     .custom-link-btn {
         display: inline-block;
-        background: linear-gradient(135deg, #dd8448 0%, #b45309 100%);
+        background: linear-gradient(135deg, #dd8448 0%, #ea580c 100%);
         color: white !important;
-        padding: 12px 28px;
+        padding: 14px 32px;
         border-radius: 50px;
         text-decoration: none;
         font-weight: 600;
+        font-size: 1rem;
         transition: transform 0.2s;
-        box-shadow: 0 4px 15px rgba(221, 132, 72, 0.4);
+        box-shadow: 0 4px 20px rgba(221, 132, 72, 0.4);
     }
     .custom-link-btn:hover {
         transform: translateY(-2px);
         filter: brightness(1.1);
     }
 
-    /* Welcome Box */
     .welcome-box {
-        margin-top: 50px;
-        padding: 40px;
+        margin-top: 60px;
+        padding: 50px;
         background: rgba(15, 23, 42, 0.6);
         border: 1px dashed rgba(255,255,255,0.2);
         border-radius: 16px;
@@ -317,10 +317,7 @@ if st.session_state.selected_location:
     if location_key in SITES:
         site = SITES[location_key]
         
-        # --- HTML FOR ELECTRIC BORDER CARD (Indentation Removed) ---
-        # වැදගත්: HTML කේතය පේළියේ මුලටම (No indentation) තබා ඇත.
-        # මේ නිසා එය Code Block එකක් ලෙස නොපෙනේ.
-        
+        # --- HTML FOR ELECTRIC BORDER CARD (No Indentation to fix render issue) ---
         electric_card_html = f"""
 <svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
   <defs>
@@ -367,7 +364,7 @@ if st.session_state.selected_location:
         <hr class="divider" />
 
         <div style="width:100%;">
-            <p style="color:#cbd5e1; margin-bottom:15px; font-size:0.9rem;">
+            <p style="color:#cbd5e1; margin-bottom:15px; font-size:0.95rem;">
                 Provider: <strong>{site['provider']}</strong>
             </p>
             <a href="{site['url']}" target="_blank" class="custom-link-btn">
