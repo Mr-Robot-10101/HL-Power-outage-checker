@@ -12,24 +12,24 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (Electric Border + Background)
+# 2. 🎨 CSS Styles (Background + Sidebar + Electric Card)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
     
-    /* Base Settings */
+    /* General Settings */
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
     }
 
-    /* Background Setup */
+    /* Transparent App for Background Layer */
     .stApp {
-        background: #020617; /* Fallback */
+        background: transparent !important;
     }
 
-    /* Fixed Background Animation Layer */
+    /* --- FIXED BACKGROUND ANIMATION (CSS) --- */
     #bg-animation {
         position: fixed;
         top: 0;
@@ -41,7 +41,7 @@ st.markdown(
         background-size: 400% 400%;
         animation: gradientBG 15s ease infinite;
     }
-    
+
     @keyframes gradientBG {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
@@ -55,6 +55,12 @@ st.markdown(
         backdrop-filter: blur(10px);
     }
     
+    section[data-testid="stSidebar"] h3 {
+        color: #f1f5f9;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
     section[data-testid="stSidebar"] button {
         background-color: rgba(30, 41, 59, 0.95) !important;
         color: #cbd5e1 !important;
@@ -70,6 +76,12 @@ st.markdown(
         font-weight: 500 !important;
         transition: all 0.2s ease-in-out !important;
     }
+
+    section[data-testid="stSidebar"] button p {
+        text-align: center !important;
+        width: 100%;
+        margin: 0;
+    }
     
     section[data-testid="stSidebar"] button:hover {
         background-color: rgba(59, 130, 246, 0.3) !important;
@@ -79,73 +91,72 @@ st.markdown(
     }
 
     /* -------------------------------------------------------
-       ELECTRIC BORDER CSS (From your Request)
+       ⚡ ELECTRIC BORDER CARD STYLES (Converted for Streamlit)
        ------------------------------------------------------- */
     
-    /* Variables */
     :root {
       --electric-border-color: #dd8448;
-      --electric-light-color: #fbd38d; /* Using hex fallback for compatibility */
+      --electric-light-color: #fbd38d; 
       --color-neutral-900: #1a202c;
     }
 
-    /* Card Container Wrapper */
-    .electric-card-wrapper {
+    /* Card Container */
+    .electric-card-container {
         position: relative;
         width: 100%;
-        max-width: 600px;
+        max-width: 500px; /* Card Width Limit */
         margin: 20px auto;
         padding: 2px;
         border-radius: 24px;
-        background: linear-gradient(-30deg, rgba(221, 132, 72, 0.4), transparent, rgba(221, 132, 72, 0.4));
+        background: linear-gradient(-30deg, rgba(221, 132, 72, 0.4), transparent, rgba(221, 132, 72, 0.4)),
+                    linear-gradient(to bottom, rgba(26, 32, 44, 0.8), rgba(26, 32, 44, 0.8));
     }
 
     .inner-container {
         position: relative;
+        height: 100%;
         border-radius: 24px;
-        background: rgba(15, 23, 42, 0.6); /* Semi-transparent dark bg */
-        backdrop-filter: blur(10px);
+        /* Ensure content is clickable */
+        z-index: 1; 
     }
 
-    /* Border Layers */
+    /* Border Animation Layers */
     .border-outer {
         border: 2px solid rgba(221, 132, 72, 0.5);
         border-radius: 24px;
         padding-right: 4px;
         padding-bottom: 4px;
-        pointer-events: none; /* Let clicks pass through */
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
     }
 
     .main-card {
-        width: 100%; /* Changed from fixed 350px */
-        height: 100%; /* Changed from fixed 500px */
-        min-height: 350px;
+        width: 100%;
+        height: 100%;
         border-radius: 24px;
         border: 2px solid var(--electric-border-color);
         margin-top: -4px;
         margin-left: -4px;
-        filter: url(#turbulent-displace); /* The Magic SVG Filter */
+        filter: url(#turbulent-displace); /* SVG Filter */
         pointer-events: none;
     }
 
-    /* Glow Effects */
+    /* Glows */
     .glow-layer-1 {
         border: 2px solid rgba(221, 132, 72, 0.6);
         border-radius: 24px;
         position: absolute; inset: 0;
-        filter: blur(1px);
-        pointer-events: none;
+        filter: blur(1px); pointer-events: none;
     }
 
     .glow-layer-2 {
         border: 2px solid var(--electric-light-color);
         border-radius: 24px;
         position: absolute; inset: 0;
-        filter: blur(4px);
-        pointer-events: none;
+        filter: blur(4px); pointer-events: none;
     }
 
-    /* Background Glow */
     .background-glow {
         position: absolute; inset: 0;
         border-radius: 24px;
@@ -154,29 +165,32 @@ st.markdown(
         opacity: 0.3;
         z-index: -1;
         background: linear-gradient(-30deg, var(--electric-light-color), transparent, var(--electric-border-color));
+        pointer-events: none;
     }
+
+    /* Overlays */
+    .overlay-1, .overlay-2 {
+        position: absolute; inset: 0;
+        border-radius: 24px;
+        mix-blend-mode: overlay;
+        transform: scale(1.05);
+        filter: blur(16px);
+        background: linear-gradient(-30deg, white, transparent 30%, transparent 70%, white);
+        pointer-events: none;
+    }
+    .overlay-1 { opacity: 0.8; }
+    .overlay-2 { opacity: 0.5; }
 
     /* Content Layout */
     .content-container {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        padding: 30px;
-        z-index: 10;
-    }
-
-    .content-top {
-        flex-grow: 1;
+        position: relative; /* Changed to relative for flow */
+        padding: 40px;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-    }
-
-    .content-bottom {
-        padding-top: 20px;
-        text-align: center;
+        z-index: 10;
+        min-height: 350px;
     }
 
     /* Badge (Scrollbar glass) */
@@ -188,16 +202,16 @@ st.markdown(
         text-transform: uppercase;
         font-weight: bold;
         font-size: 12px;
-        color: #4ade80; /* Green text */
-        margin-bottom: 15px;
+        color: #4ade80;
+        margin-bottom: 20px;
         display: inline-block;
     }
 
     /* Typography */
-    .title {
+    .card-title {
         font-size: 2.5rem;
         font-weight: 800;
-        margin: 10px 0;
+        margin: 0;
         background: linear-gradient(to bottom, #fff, #cbd5e1);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -206,38 +220,38 @@ st.markdown(
     .customer-info {
         color: #94a3b8;
         font-size: 1rem;
-        margin-bottom: 5px;
+        margin-top: 10px;
     }
     
     .address-text {
         font-family: monospace;
         color: #cbd5e1;
         background: rgba(0,0,0,0.3);
-        padding: 8px;
+        padding: 8px 12px;
         border-radius: 6px;
         font-size: 0.85rem;
-        margin-top: 10px;
+        margin-top: 15px;
         display: inline-block;
+        border: 1px solid rgba(255,255,255,0.1);
     }
 
     .divider {
         border: none;
         height: 1px;
-        background: rgba(255,255,255,0.1);
-        margin: 10px 0;
+        background: rgba(255,255,255,0.15);
+        margin: 25px 0;
         width: 100%;
     }
 
-    /* Custom Button inside HTML */
+    /* Button */
     .custom-link-btn {
         display: inline-block;
         background: linear-gradient(135deg, #dd8448 0%, #b45309 100%);
-        color: white;
-        padding: 12px 24px;
+        color: white !important;
+        padding: 12px 28px;
         border-radius: 50px;
         text-decoration: none;
         font-weight: 600;
-        margin-top: 10px;
         transition: transform 0.2s;
         box-shadow: 0 4px 15px rgba(221, 132, 72, 0.4);
     }
@@ -245,7 +259,8 @@ st.markdown(
         transform: translateY(-2px);
         filter: brightness(1.1);
     }
-    
+
+    /* Welcome Box */
     .welcome-box {
         margin-top: 50px;
         padding: 40px;
@@ -296,10 +311,10 @@ with st.sidebar:
 # -------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Title
+# Main Title
 st.markdown(
     """
-    <div style="text-align:center; margin-bottom: 30px;">
+    <div style="text-align:center; margin-bottom: 40px;">
         <h1 style="margin:0; font-size: 3.5rem; text-shadow: 0 4px 15px rgba(0,0,0,0.8);">
             ⚡ Power Check
         </h1>
@@ -311,16 +326,14 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Display Logic with ELECTRIC BORDER CARD
+# --- Display Logic ---
 if st.session_state.selected_location:
     location_key = st.session_state.selected_location.lower().strip()
     
     if location_key in SITES:
         site = SITES[location_key]
         
-        # --- ELECTRIC BORDER CARD HTML ---
-        # මෙතන අපි Python variables (site name, address) HTML එක ඇතුලට දානවා
-        
+        # --- HTML FOR ELECTRIC BORDER CARD ---
         electric_card_html = f"""
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
           <defs>
@@ -339,7 +352,7 @@ if st.session_state.selected_location:
           </defs>
         </svg>
 
-        <div class="electric-card-wrapper">
+        <div class="electric-card-container">
           <div class="inner-container">
             
             <div class="border-outer">
@@ -348,15 +361,15 @@ if st.session_state.selected_location:
             <div class="glow-layer-1"></div>
             <div class="glow-layer-2"></div>
             <div class="background-glow"></div>
+            <div class="overlay-1"></div>
+            <div class="overlay-2"></div>
 
             <div class="content-container">
-              
-              <div class="content-top">
                 <div class="scrollbar-glass">
                   ● Active Location
                 </div>
                 
-                <p class="title">{site['site']}</p>
+                <p class="card-title">{site['site']}</p>
                 
                 <p class="customer-info">
                    👤 Customer: <span style="color:white; font-weight:600;">{site.get('customer', 'N/A')}</span>
@@ -365,18 +378,19 @@ if st.session_state.selected_location:
                 <div class="address-text">
                     📍 {site.get('address', 'N/A')}
                 </div>
-              </div>
 
-              <hr class="divider" />
+                <hr class="divider" />
 
-              <div class="content-bottom">
-                <p class="description" style="color:#cbd5e1; margin-bottom:10px;">Provider: {site['provider']}</p>
-                <a href="{site['url']}" target="_blank" class="custom-link-btn">
-                    Check Status ➜
-                </a>
-              </div>
-              
+                <div style="width:100%;">
+                    <p style="color:#cbd5e1; margin-bottom:15px; font-size:0.9rem;">
+                        Provider: <strong>{site['provider']}</strong>
+                    </p>
+                    <a href="{site['url']}" target="_blank" class="custom-link-btn">
+                        Check Status ➜
+                    </a>
+                </div>
             </div>
+            
           </div>
         </div>
         """
@@ -386,7 +400,7 @@ if st.session_state.selected_location:
     else:
         st.error("Error: Location data not found.")
 else:
-    # Welcome Box
+    # Welcome Message
     st.markdown(
         """
         <div class="welcome-box">
