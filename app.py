@@ -184,7 +184,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.markdown(
     """
     <div style="text-align:center; margin-bottom: 30px;">
-        <h1 style="margin:0; font-size: 2.2rem;">⚡ Honey Light Power outage Checker</h1>
+        <h1 style="margin:0; font-size: 2.8rem;">⚡ Honey Light Power outage Checker</h1>
         <p style="color: #64748b; font-size: 1.1rem; margin-top:8px;">
             Real-time outage status by location
         </p>
