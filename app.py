@@ -13,127 +13,141 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 🎨 MODERN UI THEME (Glass + Soft Glow)
+# 🎨 CLEAN MODERN THEME (Light cards on dark bg)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
-    /* Background */
+    /* ---------- App Background ---------- */
     .stApp {
-        background: radial-gradient(circle at top, #0f172a, #020617);
+        background: linear-gradient(180deg, #0b1220, #111827);
         color: #e5e7eb;
     }
 
-    /* Sidebar */
+    /* ---------- Sidebar ---------- */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #020617, #020617);
+        background: #020617;
+        border-right: 1px solid #1f2937;
     }
 
     section[data-testid="stSidebar"] button {
         background: #020617;
         color: #e5e7eb;
         border: 1px solid #1f2937;
-        border-radius: 12px;
-        padding: 12px;
+        border-radius: 10px;
+        padding: 10px;
         font-weight: 500;
-        transition: all 0.2s ease;
     }
 
     section[data-testid="stSidebar"] button:hover {
-        background: #1f6feb;
+        background: #2563eb;
+        border-color: #2563eb;
         color: white;
-        border-color: #1f6feb;
-        transform: translateY(-1px);
     }
 
-    /* Header */
-    .app-title {
-        font-size: 44px;
-        font-weight: 800;
-        letter-spacing: -0.5px;
+    /* ---------- Header ---------- */
+    .title {
+        font-size: 38px;
+        font-weight: 700;
         text-align: center;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
     }
 
-    .app-subtitle {
+    .subtitle {
         text-align: center;
-        opacity: .75;
-        font-size: 15px;
-        margin-bottom: 28px;
+        color: #9ca3af;
+        font-size: 14px;
+        margin-bottom: 24px;
     }
 
-    /* Input (glass) */
+    /* ---------- Input ---------- */
     input {
-        background: rgba(15, 23, 42, .75) !important;
-        border-radius: 14px !important;
+        background: #020617 !important;
         border: 1px solid #1f2937 !important;
-        padding: 14px !important;
+        border-radius: 10px !important;
+        padding: 12px !important;
         font-size: 15px !important;
     }
 
-    /* Card */
+    /* ---------- Main Card ---------- */
     .card {
-        background: rgba(2, 6, 23, .75);
-        border: 1px solid #1f2937;
-        border-radius: 18px;
+        background: #ffffff;
+        color: #111827;
+        border-radius: 14px;
         padding: 22px;
-        margin-top: 22px;
-        box-shadow: 0 12px 35px rgba(0,0,0,.45);
-        backdrop-filter: blur(6px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+        max-width: 900px;
+        margin: auto;
     }
 
-    /* Address row */
-    .address-row {
+    /* ---------- Info rows ---------- */
+    .row {
+        margin-top: 14px;
+        font-size: 15px;
+    }
+
+    .label {
+        font-weight: 600;
+        color: #111827;
+    }
+
+    /* ---------- Address + Copy ---------- */
+    .address {
         display: flex;
         align-items: center;
-        gap: 14px;
-        margin: 14px 0;
-        font-size: 16px;
-        font-weight: 600;
-        color: #ffffff;
+        gap: 12px;
+        margin-top: 12px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #111827;
         flex-wrap: wrap;
     }
 
     .copy-btn {
-        padding: 6px 14px;
-        border-radius: 999px;
-        border: none;
-        background: linear-gradient(90deg, #2563eb, #1d4ed8);
+        padding: 5px 12px;
+        border-radius: 8px;
+        border: 1px solid #2563eb;
+        background: #2563eb;
         color: white;
+        font-size: 13px;
         cursor: pointer;
         font-weight: 600;
-        transition: all .25s ease;
     }
 
     .copy-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(37,99,235,.45);
+        background: #1d4ed8;
     }
 
-    /* Provider button */
+    /* ---------- Provider Button ---------- */
     .provider-btn {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 12px 22px;
-        border-radius: 999px;
-        color: #fff !important;
+        padding: 10px 18px;
+        border-radius: 10px;
         font-weight: 600;
         text-decoration: none;
-        box-shadow: 0 8px 24px rgba(0,0,0,.45);
-        transition: all .25s ease;
-        margin-top: 6px;
+        color: white !important;
+        margin-top: 18px;
     }
 
-    .provider-btn:hover { transform: translateY(-2px); }
+    .jemena { background: #16a34a; }
+    .powercor { background: #2563eb; }
+    .ausnet { background: #7c3aed; }
+    .default { background: #374151; }
 
-    .jemena { background: linear-gradient(90deg, #16a34a, #22c55e); }
-    .powercor { background: linear-gradient(90deg, #2563eb, #1d4ed8); }
-    .ausnet { background: linear-gradient(90deg, #7c3aed, #9333ea); }
-    .default { background: linear-gradient(90deg, #1f6feb, #2563eb); }
+    .provider-btn:hover {
+        opacity: 0.9;
+    }
 
     @media (max-width: 768px) {
-        .provider-btn { width: 100%; justify-content: center; }
+        .card {
+            margin: 0 8px;
+        }
+        .provider-btn {
+            width: 100%;
+            justify-content: center;
+        }
     }
     </style>
     """,
@@ -146,7 +160,7 @@ st.markdown(
 with open("sites.json", "r", encoding="utf-8") as f:
     SITES = json.load(f)
 
-locations_list = list(SITES.keys())
+locations = list(SITES.keys())
 
 # -------------------------------------------------
 # Session state
@@ -155,14 +169,14 @@ if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
 
 # -------------------------------------------------
-# Sidebar (RESTORED ✅)
+# Sidebar
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("## ⚡ Locations")
-    st.caption("Tap a location to auto-fill")
+    st.caption("Select a location")
 
-    for loc in locations_list:
-        if st.button(loc.title(), use_container_width=True, key=f"loc_{loc}"):
+    for loc in locations:
+        if st.button(loc.title(), use_container_width=True):
             st.session_state.selected_location = loc
             st.rerun()
 
@@ -171,8 +185,8 @@ with st.sidebar:
 # -------------------------------------------------
 st.markdown(
     """
-    <div class="app-title">⚡ Power Outage Checker</div>
-    <div class="app-subtitle">
+    <div class="title">⚡ Power Outage Checker</div>
+    <div class="subtitle">
         Quickly access provider outage pages for each site
     </div>
     """,
@@ -197,32 +211,29 @@ if location and location.lower() in SITES:
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
 
-    st.success(
-        f"📍 **{site['site']}**\n\n"
-        f"👤 **Customer:** {site.get('customer', 'N/A')}"
-    )
+    st.markdown(f"### 📍 {site['site']}")
+    st.markdown(f"**Customer:** {site.get('customer','N/A')}")
 
-    # Address + Copy (NO rerun)
     components.html(
         f"""
-        <div class="address-row">
-            Address: {address}
+        <div class="address">
+            <span><b>Address:</b> {address}</span>
             <button class="copy-btn"
                 onclick="
                     navigator.clipboard.writeText('{address}');
-                    this.innerText='✔ Copied';
-                    setTimeout(()=>this.innerText='📋 Copy',1500);
+                    this.innerText='Copied';
+                    setTimeout(()=>this.innerText='Copy',1500);
                 ">
-                📋 Copy
+                Copy
             </button>
         </div>
         """,
         height=60
     )
 
-    st.write(f"**Provider:** {site['provider']}")
+    st.markdown(f"<div class='row'><span class='label'>Provider:</span> {site['provider']}</div>",
+                unsafe_allow_html=True)
 
-    # Provider color
     if "jemena" in provider:
         cls = "jemena"
     elif "powercor" in provider:
@@ -244,6 +255,6 @@ if location and location.lower() in SITES:
     st.markdown('</div>', unsafe_allow_html=True)
 
 elif location:
-    st.error("❌ Location not found in database")
+    st.error("❌ Location not found")
 else:
-    st.info("👈 Select a location from the sidebar to begin")
+    st.info("👈 Select a location from the sidebar")
