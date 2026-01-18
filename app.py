@@ -12,7 +12,7 @@ st.markdown(
     """
     <div style="text-align:center;">
         <h1 style="white-space: nowrap; margin-bottom: 5px;">
-            ⚡ Power Outage Checker (Advanced)
+            ⚡ Power Outage Checker
         </h1>
         <p style="opacity: 0.7; margin-top: 0;">
             Auto-check power status using live provider outage maps
