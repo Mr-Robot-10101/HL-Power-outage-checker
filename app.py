@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles
+# 2. 🎨 CSS Styles (Clean Glassmorphism Look)
 # -------------------------------------------------
 st.markdown(
     """
@@ -28,7 +28,7 @@ st.markdown(
         background: transparent !important;
     }
 
-    /* --- BACKGROUND ANIMATION --- */
+    /* --- BACKGROUND ANIMATION (Keep Flowing Energy) --- */
     #bg-animation {
         position: fixed;
         top: 0;
@@ -47,7 +47,7 @@ st.markdown(
         100% { background-position: 0% 50%; }
     }
 
-    /* --- SIDEBAR STYLING --- */
+    /* --- SIDEBAR STYLING (Solid Dark) --- */
     section[data-testid="stSidebar"] {
         background-color: #0b0f19;
         border-right: 1px solid rgba(255,255,255,0.05);
@@ -60,7 +60,7 @@ st.markdown(
         margin-bottom: 10px;
     }
 
-    /* Solid Sidebar Buttons */
+    /* Sidebar Buttons - Solid Box & Centered Text */
     section[data-testid="stSidebar"] button {
         background-color: #1e293b !important;
         color: #e2e8f0 !important;
@@ -99,144 +99,65 @@ st.markdown(
         color: white !important;
     }
 
-    /* -------------------------------------------------------
-       ⚡ ELECTRIC BORDER CSS
-       ------------------------------------------------------- */
-    
-    :root {
-      --electric-border-color: #dd8448;
-      --electric-light-color: #fbd38d; 
-    }
-
-    .electric-card-container {
-        position: relative;
-        width: 100%;
-        max-width: 550px;
-        margin: 30px auto;
-        padding: 2px;
-        border-radius: 24px;
-        background: linear-gradient(-30deg, rgba(221, 132, 72, 0.4), transparent, rgba(221, 132, 72, 0.4));
-    }
-
-    .inner-container {
-        position: relative;
-        border-radius: 24px;
-        background: rgba(15, 23, 42, 0.95); /* Solid dark background */
-        z-index: 1;
-        overflow: hidden;
-    }
-
-    .border-outer {
-        border: 2px solid rgba(221, 132, 72, 0.5);
-        border-radius: 24px;
-        position: absolute; inset: 0; pointer-events: none;
-    }
-
-    .main-card {
-        width: 100%; height: 100%;
-        border-radius: 24px;
-        border: 2px solid var(--electric-border-color);
-        margin-top: -4px; margin-left: -4px;
-        filter: url(#turbulent-displace); /* SVG Filter applied here */
-        pointer-events: none;
-    }
-
-    .glow-layer-1 {
-        border: 2px solid rgba(221, 132, 72, 0.6);
-        border-radius: 24px; position: absolute; inset: 0;
-        filter: blur(1px); pointer-events: none;
-    }
-
-    .glow-layer-2 {
-        border: 2px solid var(--electric-light-color);
-        border-radius: 24px; position: absolute; inset: 0;
-        filter: blur(4px); pointer-events: none;
-    }
-
-    .background-glow {
-        position: absolute; inset: 0;
-        border-radius: 24px;
-        filter: blur(40px);
-        opacity: 0.3;
-        z-index: -1;
-        background: radial-gradient(circle, var(--electric-border-color), transparent 70%);
-        pointer-events: none;
-    }
-
-    .content-container {
-        position: relative;
+    /* --- CLEAN CARD STYLING (Reverted from Electric Border) --- */
+    .result-header {
+        background: rgba(15, 23, 42, 0.75); /* Dark Glass */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
         padding: 40px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         text-align: center;
-        z-index: 10;
-        min-height: 380px;
-    }
-
-    .scrollbar-glass {
-        background: rgba(34, 197, 94, 0.1);
-        border: 1px solid rgba(34, 197, 94, 0.3);
-        border-radius: 14px;
-        padding: 6px 16px;
-        text-transform: uppercase;
-        font-weight: bold;
-        font-size: 12px;
-        color: #4ade80;
+        backdrop-filter: blur(20px);
         margin-bottom: 20px;
-        display: inline-block;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        animation: fadeIn 0.5s ease-out;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    .card-title {
-        font-size: 2.5rem;
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .status-badge {
+        display: inline-block;
+        background-color: rgba(34, 197, 94, 0.15);
+        color: #4ade80;
+        padding: 6px 16px;
+        border-radius: 99px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        margin-bottom: 15px;
+    }
+
+    .site-name {
+        font-size: 2.8rem;
         font-weight: 800;
-        margin: 0;
+        margin: 10px 0 20px 0;
         background: linear-gradient(to bottom, #fff, #cbd5e1);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
     
-    .customer-info {
+    .customer-row {
         color: #94a3b8;
         font-size: 1.1rem;
-        margin-top: 10px;
+        margin-bottom: 20px;
     }
-    
-    .address-text {
+
+    /* Address Box */
+    .address-box {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 12px;
         font-family: monospace;
         color: #cbd5e1;
-        background: rgba(0,0,0,0.3);
-        padding: 10px 15px;
-        border-radius: 8px;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         margin-top: 20px;
-        display: inline-block;
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .divider {
-        border: none;
-        height: 1px;
-        background: rgba(255,255,255,0.15);
-        margin: 30px 0;
-        width: 100%;
-    }
-
-    .custom-link-btn {
-        display: inline-block;
-        background: linear-gradient(135deg, #dd8448 0%, #ea580c 100%);
-        color: white !important;
-        padding: 14px 32px;
-        border-radius: 50px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: transform 0.2s;
-        box-shadow: 0 4px 20px rgba(221, 132, 72, 0.4);
-    }
-    .custom-link-btn:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.1);
+        margin-bottom: 30px;
     }
 
     .welcome-box {
@@ -259,7 +180,7 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# 3. Load Data
+# 3. Load Data & State
 # -------------------------------------------------
 try:
     with open("sites.json", "r", encoding="utf-8") as f:
@@ -273,7 +194,7 @@ if "selected_location" not in st.session_state:
     st.session_state.selected_location = None
 
 # -------------------------------------------------
-# 4. Sidebar
+# 4. Sidebar Logic
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("### 🗺️ Locations")
@@ -289,6 +210,7 @@ with st.sidebar:
 # -------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
 
+# Main Title
 st.markdown(
     """
     <div style="text-align:center; margin-bottom: 40px;">
@@ -310,72 +232,42 @@ if st.session_state.selected_location:
     if location_key in SITES:
         site = SITES[location_key]
         
-        # --- HTML STRING (FLUSH LEFT) ---
-        # වැදගත්: පහත HTML කේතය පිටුවේ වම් කෙළවරටම (Flush Left) ලියා ඇත.
-        # මෙහි කිසිදු ඉඩක් (Indentation) නැති නිසා Streamlit මෙය Code Block එකක් ලෙස නොසලකයි.
-
-        electric_card_html = f"""
-<div class="electric-card-container">
-    <div class="inner-container">
-        <svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
-          <defs>
-            <filter id="turbulent-displace" x="-20%" y="-20%" width="140%" height="140%">
-              <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise1" seed="1" />
-              <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
-                <animate attributeName="dy" values="700; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
-              </feOffset>
-              <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise2" seed="1" />
-              <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
-                <animate attributeName="dy" values="0; -700" dur="6s" repeatCount="indefinite" calcMode="linear" />
-              </feOffset>
-              <feComposite in="offsetNoise1" in2="offsetNoise2" result="part1" />
-              <feDisplacementMap in="SourceGraphic" in2="part1" scale="30" xChannelSelector="R" yChannelSelector="B" />
-            </filter>
-          </defs>
-        </svg>
-
-        <div class="border-outer">
-          <div class="main-card"></div>
-        </div>
-        <div class="glow-layer-1"></div>
-        <div class="glow-layer-2"></div>
-        <div class="background-glow"></div>
-
-        <div class="content-container">
-            <div class="scrollbar-glass">
-              ● Active Location
-            </div>
-            
-            <p class="card-title">{site['site']}</p>
-            
-            <p class="customer-info">
-               👤 Customer: <span style="color:white; font-weight:600;">{site.get('customer', 'N/A')}</span>
-            </p>
-            
-            <div class="address-text">
-                📍 {site.get('address', 'N/A')}
-            </div>
-
-            <hr class="divider" />
-
-            <div style="width:100%;">
-                <p style="color:#cbd5e1; margin-bottom:15px; font-size:0.95rem;">
-                    Provider: <strong>{site['provider']}</strong>
-                </p>
-                <a href="{site['url']}" target="_blank" class="custom-link-btn">
-                    Check Status ➜
-                </a>
-            </div>
-        </div>
+        # --- ORIGINAL CLEAN CARD DESIGN ---
+        # Electric Border ඉවත් කර පරණ ලස්සන Design එකට මාරු කරන ලදී.
         
-    </div>
-</div>
-"""
-        st.markdown(electric_card_html, unsafe_allow_html=True)
+        st.markdown(
+            f"""
+            <div class="result-header">
+                <div class="status-badge">● Active Location</div>
+                <div class="site-name">{site['site']}</div>
+                
+                <div class="customer-row">
+                    👤 Customer: <span style="color:white; font-weight:600;">{site.get('customer', 'N/A')}</span>
+                </div>
+                
+                <div class="address-box">
+                    📍 {site.get('address', 'N/A')}
+                </div>
+
+                <div style="margin-top:20px;"></div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        
+        # Provider Button
+        provider_name = site['provider']
+        st.link_button(
+            label=f"Check {provider_name} Status ➜",
+            url=site['url'],
+            use_container_width=True,
+            type="primary" 
+        )
         
     else:
         st.error("Error: Location data not found.")
 else:
+    # Welcome Message
     st.markdown(
         """
         <div class="welcome-box">
