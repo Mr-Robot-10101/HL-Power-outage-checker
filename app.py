@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (Smoother Rain Animation)
+# 2. 🎨 CSS Styles (Floating Clouds Animation)
 # -------------------------------------------------
 st.markdown(
     """
@@ -23,12 +23,12 @@ st.markdown(
         font-family: 'Inter', sans-serif;
     }
 
-    /* Transparent Background */
+    /* Make Streamlit Transparent */
     .stApp {
         background: transparent !important;
     }
 
-    /* --- RAIN BACKGROUND CONTAINER --- */
+    /* --- SKY BACKGROUND CONTAINER --- */
     #bg-animation {
         position: fixed;
         top: 0;
@@ -36,44 +36,63 @@ st.markdown(
         width: 100vw;
         height: 100vh;
         z-index: -1;
-        background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%);
+        /* Night Sky Gradient */
+        background: linear-gradient(to bottom, #020617 0%, #0f172a 60%, #1e293b 100%);
         overflow: hidden;
     }
 
-    /* --- SMOOTH RAIN LAYERS --- */
-    /* මෙමගින් වැසි ස්ථර දෙකක් (Layers) සාදයි */
+    /* --- CLOUD ANIMATION CSS --- */
     
-    .rain-layer {
+    /* Cloud Shape Base */
+    .cloud {
         position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 100%);
-        background-repeat: repeat;
+        background: rgba(255, 255, 255, 0.08); /* Very transparent white */
+        border-radius: 100px;
+        filter: blur(30px); /* Make it look soft/misty */
+        z-index: 0;
+        opacity: 0.8;
     }
 
-    /* Layer 1: ළඟින් වැටෙන ලොකු බිංදු (වේගවත්) */
-    .layer-1 {
-        background-size: 2px 50px; /* බිංදුවේ ප්‍රමාණය */
-        opacity: 0.3;
-        animation: rainfall 0.7s linear infinite; /* Flicker නොවීමට වේගය සකස් කළා */
+    /* Cloud Layer 1 (Top, Slow) */
+    .c1 {
+        width: 500px; height: 120px;
+        top: 10%;
+        left: -500px; /* Start off-screen */
+        animation: drift 45s linear infinite;
     }
 
-    /* Layer 2: ඈතින් වැටෙන පොඩි බිංදු (සෙමින්) - 3D පෙනුමක් සඳහා */
-    .layer-2 {
-        background-size: 1px 30px;
-        opacity: 0.15;
-        animation: rainfall 1.5s linear infinite; /* ටිකක් හිමින් */
+    /* Cloud Layer 2 (Middle, Medium) */
+    .c2 {
+        width: 700px; height: 180px;
+        top: 40%;
+        left: -700px;
+        animation: drift 35s linear infinite;
+        animation-delay: -15s; /* Start mid-way */
+        background: rgba(255, 255, 255, 0.05);
     }
 
-    @keyframes rainfall {
-        0% {
-            background-position: 0 -100px;
-        }
-        100% {
-            background-position: 0 100vh;
-        }
+    /* Cloud Layer 3 (Bottom, Fast) */
+    .c3 {
+        width: 400px; height: 100px;
+        top: 70%;
+        left: -400px;
+        animation: drift 25s linear infinite;
+        animation-delay: -5s;
+    }
+    
+    /* Cloud Layer 4 (Extra detail) */
+    .c4 {
+        width: 300px; height: 80px;
+        top: 20%;
+        left: -300px;
+        animation: drift 50s linear infinite;
+        animation-delay: -25s;
+        filter: blur(40px);
+    }
+
+    @keyframes drift {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(120vw); } /* Move across screen */
     }
 
     /* --- SIDEBAR STYLING --- */
@@ -82,7 +101,7 @@ st.markdown(
         border-right: 1px solid rgba(255,255,255,0.05);
         backdrop-filter: blur(10px);
     }
-    
+
     section[data-testid="stSidebar"] h3 {
         color: #f1f5f9;
         font-size: 1.1rem;
@@ -103,6 +122,7 @@ st.markdown(
         justify-content: center !important;
         align-items: center !important;
         font-weight: 500 !important;
+        font-size: 0.95rem !important;
         transition: all 0.2s ease-in-out !important;
     }
 
@@ -119,7 +139,7 @@ st.markdown(
         transform: translateY(-2px);
     }
 
-    /* --- MAIN CARD --- */
+    /* --- MAIN CONTENT CARD --- */
     .result-header {
         background: rgba(15, 23, 42, 0.7);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -168,8 +188,10 @@ st.markdown(
     </style>
     
     <div id="bg-animation">
-        <div class="rain-layer layer-1"></div>
-        <div class="rain-layer layer-2"></div>
+        <div class="cloud c1"></div>
+        <div class="cloud c2"></div>
+        <div class="cloud c3"></div>
+        <div class="cloud c4"></div>
     </div>
     """,
     unsafe_allow_html=True
