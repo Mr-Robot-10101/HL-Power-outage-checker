@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (Background + Sidebar + Electric Card)
+# 2. 🎨 CSS Styles
 # -------------------------------------------------
 st.markdown(
     """
@@ -91,41 +91,38 @@ st.markdown(
     }
 
     /* -------------------------------------------------------
-       ⚡ ELECTRIC BORDER CARD STYLES (Converted for Streamlit)
+       ⚡ ELECTRIC BORDER CARD STYLES
        ------------------------------------------------------- */
     
     :root {
       --electric-border-color: #dd8448;
       --electric-light-color: #fbd38d; 
-      --color-neutral-900: #1a202c;
     }
 
-    /* Card Container */
+    /* Card Container Wrapper */
     .electric-card-container {
         position: relative;
         width: 100%;
-        max-width: 500px; /* Card Width Limit */
+        max-width: 500px;
         margin: 20px auto;
         padding: 2px;
         border-radius: 24px;
-        background: linear-gradient(-30deg, rgba(221, 132, 72, 0.4), transparent, rgba(221, 132, 72, 0.4)),
-                    linear-gradient(to bottom, rgba(26, 32, 44, 0.8), rgba(26, 32, 44, 0.8));
+        /* Using darker gradients to match the dark theme */
+        background: linear-gradient(-30deg, rgba(221, 132, 72, 0.4), transparent, rgba(221, 132, 72, 0.4));
     }
 
     .inner-container {
         position: relative;
-        height: 100%;
         border-radius: 24px;
-        /* Ensure content is clickable */
-        z-index: 1; 
+        background: rgba(15, 23, 42, 0.85); /* Dark background inside card */
+        z-index: 1;
+        overflow: hidden; /* Keeps content inside rounded corners */
     }
 
     /* Border Animation Layers */
     .border-outer {
         border: 2px solid rgba(221, 132, 72, 0.5);
         border-radius: 24px;
-        padding-right: 4px;
-        padding-bottom: 4px;
         position: absolute;
         inset: 0;
         pointer-events: none;
@@ -168,22 +165,9 @@ st.markdown(
         pointer-events: none;
     }
 
-    /* Overlays */
-    .overlay-1, .overlay-2 {
-        position: absolute; inset: 0;
-        border-radius: 24px;
-        mix-blend-mode: overlay;
-        transform: scale(1.05);
-        filter: blur(16px);
-        background: linear-gradient(-30deg, white, transparent 30%, transparent 70%, white);
-        pointer-events: none;
-    }
-    .overlay-1 { opacity: 0.8; }
-    .overlay-2 { opacity: 0.5; }
-
     /* Content Layout */
     .content-container {
-        position: relative; /* Changed to relative for flow */
+        position: relative;
         padding: 40px;
         display: flex;
         flex-direction: column;
@@ -193,7 +177,7 @@ st.markdown(
         min-height: 350px;
     }
 
-    /* Badge (Scrollbar glass) */
+    /* Badge */
     .scrollbar-glass {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -333,68 +317,68 @@ if st.session_state.selected_location:
     if location_key in SITES:
         site = SITES[location_key]
         
-        # --- HTML FOR ELECTRIC BORDER CARD ---
-        electric_card_html = f"""
-        <svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
-          <defs>
-            <filter id="turbulent-displace" x="-20%" y="-20%" width="140%" height="140%">
-              <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise1" seed="1" />
-              <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
-                <animate attributeName="dy" values="700; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
-              </feOffset>
-              <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise2" seed="1" />
-              <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
-                <animate attributeName="dy" values="0; -700" dur="6s" repeatCount="indefinite" calcMode="linear" />
-              </feOffset>
-              <feComposite in="offsetNoise1" in2="offsetNoise2" result="part1" />
-              <feDisplacementMap in="SourceGraphic" in2="part1" scale="30" xChannelSelector="R" yChannelSelector="B" />
-            </filter>
-          </defs>
-        </svg>
-
-        <div class="electric-card-container">
-          <div class="inner-container">
-            
-            <div class="border-outer">
-              <div class="main-card"></div>
-            </div>
-            <div class="glow-layer-1"></div>
-            <div class="glow-layer-2"></div>
-            <div class="background-glow"></div>
-            <div class="overlay-1"></div>
-            <div class="overlay-2"></div>
-
-            <div class="content-container">
-                <div class="scrollbar-glass">
-                  ● Active Location
-                </div>
-                
-                <p class="card-title">{site['site']}</p>
-                
-                <p class="customer-info">
-                   👤 Customer: <span style="color:white; font-weight:600;">{site.get('customer', 'N/A')}</span>
-                </p>
-                
-                <div class="address-text">
-                    📍 {site.get('address', 'N/A')}
-                </div>
-
-                <hr class="divider" />
-
-                <div style="width:100%;">
-                    <p style="color:#cbd5e1; margin-bottom:15px; font-size:0.9rem;">
-                        Provider: <strong>{site['provider']}</strong>
-                    </p>
-                    <a href="{site['url']}" target="_blank" class="custom-link-btn">
-                        Check Status ➜
-                    </a>
-                </div>
-            </div>
-            
-          </div>
-        </div>
-        """
+        # --- HTML FOR ELECTRIC BORDER CARD (Indentation Removed) ---
+        # වැදගත්: HTML කේතය පේළියේ මුලටම (No indentation) තබා ඇත.
+        # මේ නිසා එය Code Block එකක් ලෙස නොපෙනේ.
         
+        electric_card_html = f"""
+<svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
+  <defs>
+    <filter id="turbulent-displace" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise1" seed="1" />
+      <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
+        <animate attributeName="dy" values="700; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
+      </feOffset>
+      <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise2" seed="1" />
+      <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
+        <animate attributeName="dy" values="0; -700" dur="6s" repeatCount="indefinite" calcMode="linear" />
+      </feOffset>
+      <feComposite in="offsetNoise1" in2="offsetNoise2" result="part1" />
+      <feDisplacementMap in="SourceGraphic" in2="part1" scale="30" xChannelSelector="R" yChannelSelector="B" />
+    </filter>
+  </defs>
+</svg>
+
+<div class="electric-card-container">
+  <div class="inner-container">
+    
+    <div class="border-outer">
+      <div class="main-card"></div>
+    </div>
+    <div class="glow-layer-1"></div>
+    <div class="glow-layer-2"></div>
+    <div class="background-glow"></div>
+
+    <div class="content-container">
+        <div class="scrollbar-glass">
+          ● Active Location
+        </div>
+        
+        <p class="card-title">{site['site']}</p>
+        
+        <p class="customer-info">
+           👤 Customer: <span style="color:white; font-weight:600;">{site.get('customer', 'N/A')}</span>
+        </p>
+        
+        <div class="address-text">
+            📍 {site.get('address', 'N/A')}
+        </div>
+
+        <hr class="divider" />
+
+        <div style="width:100%;">
+            <p style="color:#cbd5e1; margin-bottom:15px; font-size:0.9rem;">
+                Provider: <strong>{site['provider']}</strong>
+            </p>
+            <a href="{site['url']}" target="_blank" class="custom-link-btn">
+                Check Status ➜
+            </a>
+        </div>
+    </div>
+    
+  </div>
+</div>
+"""
         st.markdown(electric_card_html, unsafe_allow_html=True)
         
     else:
