@@ -12,40 +12,39 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles & BACKGROUND ANIMATION
+# 2. 🎨 CSS Styles (FIXED & SAFE)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
     
+    /* General Settings */
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
-        height: 100%;
-        margin: 0;
-        background-color: #020617;
-        overflow: hidden;
     }
 
-    /* --- BACKGROUND ANIMATION (CSS ONLY - Reliable) --- */
+    /* Make Streamlit Transparent so our background shows through */
     .stApp {
-        /* ගැඹුරු නිල්/දම් පැහැති Gradient එකක් */
-        background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e1b4b 100%);
+        background: transparent !important;
+    }
+
+    /* --- FIXED BACKGROUND LAYER --- */
+    /* මෙම කොටස මගින් පසුබිම වෙනම Layer එකක් ලෙස සකසයි */
+    #bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1; /* අනිත් සියල්ලටම වඩා පිටුපසින් */
+        background: linear-gradient(125deg, #020617 0%, #0f172a 40%, #1e1b4b 100%);
         background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite; /* සෙමින් චලනය වන Animation එක */
-        position: relative;
-        z-index: 0;
+        animation: gradientMove 15s ease infinite;
     }
-
-    /* Gradient චලනය */
-    @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    /* සියුම් තිත් රටාවක් (Dot Pattern) එකතු කිරීම */
-    .stApp::before {
+    
+    /* Add a subtle pattern overlay */
+    #bg-animation::after {
         content: "";
         position: absolute;
         top: 0;
@@ -53,19 +52,22 @@ st.markdown(
         width: 100%;
         height: 100%;
         background-image: 
-            radial-gradient(rgba(37, 99, 235, 0.1) 1px, transparent 1px),
-            radial-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px);
-        background-size: 30px 30px, 15px 15px;
-        background-position: 0 0, 15px 15px;
-        z-index: -1;
-        opacity: 0.6;
+            radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 30px 30px;
+        pointer-events: none;
     }
 
-    /* --- SIDEBAR STYLING (Solid & Centered) --- */
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* --- SIDEBAR STYLING --- */
     section[data-testid="stSidebar"] {
-        background-color: rgba(11, 15, 25, 0.9);
+        background-color: rgba(11, 15, 25, 0.85);
         border-right: 1px solid rgba(255,255,255,0.05);
-        backdrop-filter: blur(8px);
+        backdrop-filter: blur(10px);
     }
 
     section[data-testid="stSidebar"] h3 {
@@ -75,17 +77,16 @@ st.markdown(
         padding-left: 5px;
     }
 
-    /* Buttons Styling */
+    /* Solid Sidebar Buttons */
     section[data-testid="stSidebar"] button {
-        background-color: rgba(30, 41, 59, 0.95) !important; /* Solid Box */
+        background-color: rgba(30, 41, 59, 0.9) !important;
         color: #cbd5e1 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px !important;
         margin-bottom: 8px !important;
-        height: auto !important;
         padding: 12px 0 !important;
+        width: 100%;
         
-        /* Center Text */
         text-align: center !important;
         display: flex !important;
         justify-content: center !important;
@@ -106,26 +107,19 @@ st.markdown(
         background-color: rgba(59, 130, 246, 0.3) !important;
         border-color: #3b82f6 !important;
         color: white !important;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        transform: translateY(-2px);
     }
 
-    /* --- MAIN CARD STYLING --- */
+    /* --- MAIN CONTENT CARD --- */
     .result-header {
-        background: rgba(15, 23, 42, 0.8);
+        background: rgba(15, 23, 42, 0.7);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 16px;
         padding: 40px;
         text-align: center;
-        backdrop-filter: blur(20px);
+        backdrop-filter: blur(15px);
         margin-bottom: 20px;
         box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-        animation: fadeIn 0.5s ease-out;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
     }
 
     .status-badge {
@@ -147,14 +141,12 @@ st.markdown(
         background: linear-gradient(to bottom, #fff, #cbd5e1);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
 
-    /* Welcome Box */
     .welcome-box {
-        margin-top: 40px;
-        padding: 50px;
-        background: rgba(15, 23, 42, 0.7);
+        margin-top: 50px;
+        padding: 40px;
+        background: rgba(15, 23, 42, 0.6);
         border: 1px dashed rgba(255,255,255,0.2);
         backdrop-filter: blur(10px);
         border-radius: 16px;
@@ -165,12 +157,14 @@ st.markdown(
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     </style>
+    
+    <div id="bg-animation"></div>
     """,
     unsafe_allow_html=True
 )
 
 # -------------------------------------------------
-# 3. Load Data
+# 3. Load Data & State
 # -------------------------------------------------
 try:
     with open("sites.json", "r", encoding="utf-8") as f:
@@ -180,7 +174,6 @@ except FileNotFoundError:
 
 locations_list = list(SITES.keys())
 
-# Session State
 if "selected_location" not in st.session_state:
     st.session_state.selected_location = None
 
@@ -204,7 +197,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 # Title
 st.markdown(
     """
-    <div style="text-align:center; margin-bottom: 30px; position: relative; z-index: 1;">
+    <div style="text-align:center; margin-bottom: 30px;">
         <h1 style="margin:0; font-size: 3.5rem; text-shadow: 0 4px 15px rgba(0,0,0,0.8);">
             ⚡ Power Check
         </h1>
