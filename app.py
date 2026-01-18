@@ -1,5 +1,6 @@
 import json
 import streamlit as st
+import textwrap  # HTML Indentation ගැටලුව විසඳීමට මෙය භාවිතා කරයි
 
 # -------------------------------------------------
 # 1. Page Config
@@ -12,7 +13,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (Sidebar Matching 1st Image + Electric Card)
+# 2. 🎨 CSS Styles (Background + Solid Sidebar + Card)
 # -------------------------------------------------
 st.markdown(
     """
@@ -47,9 +48,9 @@ st.markdown(
         100% { background-position: 0% 50%; }
     }
 
-    /* --- SIDEBAR STYLING (MATCHING 1ST IMAGE) --- */
+    /* --- SIDEBAR STYLING (Solid Dark Style) --- */
     section[data-testid="stSidebar"] {
-        background-color: #0b0f19; /* Very Dark Blue */
+        background-color: #0b0f19;
         border-right: 1px solid rgba(255,255,255,0.05);
     }
     
@@ -62,7 +63,7 @@ st.markdown(
 
     /* Sidebar Buttons - Solid Box & Centered Text */
     section[data-testid="stSidebar"] button {
-        background-color: #1e293b !important; /* Solid Dark Grey/Blue */
+        background-color: #1e293b !important; /* Solid Dark Color */
         color: #e2e8f0 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px !important;
@@ -70,7 +71,6 @@ st.markdown(
         padding: 12px 0 !important;
         width: 100%;
         
-        /* Force Centering */
         text-align: center !important;
         display: flex !important;
         justify-content: center !important;
@@ -82,23 +82,20 @@ st.markdown(
         box-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
 
-    /* Fix inner text alignment */
     section[data-testid="stSidebar"] button p {
         text-align: center !important;
         width: 100%;
         margin: 0;
     }
 
-    /* Hover Effect */
     section[data-testid="stSidebar"] button:hover {
-        background-color: #3b82f6 !important; /* Solid Blue on Hover */
+        background-color: #3b82f6 !important; /* Blue Hover */
         border-color: #3b82f6 !important;
         color: white !important;
         transform: translateY(-1px);
         box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
 
-    /* Active/Focus Effect */
     section[data-testid="stSidebar"] button:focus {
         background-color: #2563eb !important;
         border-color: #60a5fa !important;
@@ -127,7 +124,7 @@ st.markdown(
     .inner-container {
         position: relative;
         border-radius: 24px;
-        background: rgba(15, 23, 42, 0.9); /* Darker background for contrast */
+        background: rgba(15, 23, 42, 0.9);
         z-index: 1;
         overflow: hidden;
     }
@@ -317,65 +314,68 @@ if st.session_state.selected_location:
     if location_key in SITES:
         site = SITES[location_key]
         
-        # --- HTML FOR ELECTRIC BORDER CARD (No Indentation to fix render issue) ---
-        electric_card_html = f"""
-<svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
-  <defs>
-    <filter id="turbulent-displace" x="-20%" y="-20%" width="140%" height="140%">
-      <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise1" seed="1" />
-      <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
-        <animate attributeName="dy" values="700; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
-      </feOffset>
-      <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise2" seed="1" />
-      <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
-        <animate attributeName="dy" values="0; -700" dur="6s" repeatCount="indefinite" calcMode="linear" />
-      </feOffset>
-      <feComposite in="offsetNoise1" in2="offsetNoise2" result="part1" />
-      <feDisplacementMap in="SourceGraphic" in2="part1" scale="30" xChannelSelector="R" yChannelSelector="B" />
-    </filter>
-  </defs>
-</svg>
-
-<div class="electric-card-container">
-  <div class="inner-container">
-    
-    <div class="border-outer">
-      <div class="main-card"></div>
-    </div>
-    <div class="glow-layer-1"></div>
-    <div class="glow-layer-2"></div>
-    <div class="background-glow"></div>
-
-    <div class="content-container">
-        <div class="scrollbar-glass">
-          ● Active Location
-        </div>
+        # --- HTML Generation with textwrap.dedent ---
+        # මෙය භාවිතා කිරීමෙන් HTML එක Code Block එකක් ලෙස පෙන්වීම නතර වේ.
         
-        <p class="card-title">{site['site']}</p>
-        
-        <p class="customer-info">
-           👤 Customer: <span style="color:white; font-weight:600;">{site.get('customer', 'N/A')}</span>
-        </p>
-        
-        <div class="address-text">
-            📍 {site.get('address', 'N/A')}
-        </div>
+        electric_card_html = textwrap.dedent(f"""
+            <svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
+              <defs>
+                <filter id="turbulent-displace" x="-20%" y="-20%" width="140%" height="140%">
+                  <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise1" seed="1" />
+                  <feOffset in="noise1" dx="0" dy="0" result="offsetNoise1">
+                    <animate attributeName="dy" values="700; 0" dur="6s" repeatCount="indefinite" calcMode="linear" />
+                  </feOffset>
+                  <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="10" result="noise2" seed="1" />
+                  <feOffset in="noise2" dx="0" dy="0" result="offsetNoise2">
+                    <animate attributeName="dy" values="0; -700" dur="6s" repeatCount="indefinite" calcMode="linear" />
+                  </feOffset>
+                  <feComposite in="offsetNoise1" in2="offsetNoise2" result="part1" />
+                  <feDisplacementMap in="SourceGraphic" in2="part1" scale="30" xChannelSelector="R" yChannelSelector="B" />
+                </filter>
+              </defs>
+            </svg>
 
-        <hr class="divider" />
+            <div class="electric-card-container">
+              <div class="inner-container">
+                
+                <div class="border-outer">
+                  <div class="main-card"></div>
+                </div>
+                <div class="glow-layer-1"></div>
+                <div class="glow-layer-2"></div>
+                <div class="background-glow"></div>
 
-        <div style="width:100%;">
-            <p style="color:#cbd5e1; margin-bottom:15px; font-size:0.95rem;">
-                Provider: <strong>{site['provider']}</strong>
-            </p>
-            <a href="{site['url']}" target="_blank" class="custom-link-btn">
-                Check Status ➜
-            </a>
-        </div>
-    </div>
-    
-  </div>
-</div>
-"""
+                <div class="content-container">
+                    <div class="scrollbar-glass">
+                      ● Active Location
+                    </div>
+                    
+                    <p class="card-title">{site['site']}</p>
+                    
+                    <p class="customer-info">
+                       👤 Customer: <span style="color:white; font-weight:600;">{site.get('customer', 'N/A')}</span>
+                    </p>
+                    
+                    <div class="address-text">
+                        📍 {site.get('address', 'N/A')}
+                    </div>
+
+                    <hr class="divider" />
+
+                    <div style="width:100%;">
+                        <p style="color:#cbd5e1; margin-bottom:15px; font-size:0.95rem;">
+                            Provider: <strong>{site['provider']}</strong>
+                        </p>
+                        <a href="{site['url']}" target="_blank" class="custom-link-btn">
+                            Check Status ➜
+                        </a>
+                    </div>
+                </div>
+                
+              </div>
+            </div>
+        """)
+        
         st.markdown(electric_card_html, unsafe_allow_html=True)
         
     else:
