@@ -13,23 +13,20 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 🎨 Custom Brand Theme (CSS)
+# 🎨 Brand Theme (CSS)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
-    /* App background */
     .stApp {
         background-color: #0f172a;
         color: #e5e7eb;
     }
 
-    /* Sidebar */
     section[data-testid="stSidebar"] {
         background-color: #020617;
     }
 
-    /* Sidebar buttons */
     section[data-testid="stSidebar"] button {
         background-color: #020617;
         color: #e5e7eb;
@@ -45,7 +42,6 @@ st.markdown(
         border-color: #1f6feb;
     }
 
-    /* Main buttons */
     .stButton > button {
         background: linear-gradient(90deg, #1f6feb, #2563eb);
         color: white;
@@ -59,11 +55,9 @@ st.markdown(
         background: linear-gradient(90deg, #2563eb, #1d4ed8);
     }
 
-    /* Success / warning / error boxes */
     .stAlert {
         border-radius: 14px;
     }
-
     </style>
     """,
     unsafe_allow_html=True
@@ -79,26 +73,10 @@ with open("sites.json", "r", encoding="utf-8") as f:
 # Locations list
 # -------------------------------------------------
 locations_list = [
-    "Claremont",
-    "Shepparton",
-    "Knoxfield",
-    "Glen Iris",
-    "Brisbane",
-    "Broadmeadows",
-    "Kilsyth",
-    "Hastings",
-    "Mornington",
-    "Balwyn",
-    "Greensborough",
-    "Elsternwick",
-    "Glen Waverley",
-    "St Kilda Road",
-    "RRC",
-    "Clunes",
-    "Chum Creek",
-    "Mallana",
-    "Lochend",
-    "Indooroopilly"
+    "Claremont", "Shepparton", "Knoxfield", "Glen Iris", "Brisbane",
+    "Broadmeadows", "Kilsyth", "Hastings", "Mornington", "Balwyn",
+    "Greensborough", "Elsternwick", "Glen Waverley", "St Kilda Road",
+    "RRC", "Clunes", "Chum Creek", "Mallana", "Lochend", "Indooroopilly"
 ]
 
 # -------------------------------------------------
@@ -108,7 +86,7 @@ if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
 
 # -------------------------------------------------
-# Sidebar – Highlighted selection (brand color)
+# Sidebar – Highlight selected
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("## ⚡ Locations")
@@ -156,7 +134,7 @@ st.markdown(
 )
 
 # -------------------------------------------------
-# Location input
+# Location input (auto-filled)
 # -------------------------------------------------
 location = st.text_input(
     "📍 Enter Location / Suburb",
@@ -178,14 +156,45 @@ if location:
             f"👤 **Customer:** {site.get('customer', 'N/A')}"
         )
 
-        st.write(f"**Address:** {site.get('address', 'N/A')}")
+        # -------------------------------------------------
+        # Address + Copy + Toast (ADDED BLOCK ✅)
+        # -------------------------------------------------
+        address = site.get("address", "N/A")
+
+        col1, col2 = st.columns([6, 1])
+
+        with col1:
+            st.write(f"**Address:** {address}")
+
+        with col2:
+            if st.button("📋 Copy"):
+                st.toast("📍 Address copied!", icon="✅")
+
+                st.markdown(
+                    f"""
+                    <script>
+                        navigator.clipboard.writeText("{address}");
+                    </script>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+        # -------------------------------------------------
+        # Provider
+        # -------------------------------------------------
         st.write(f"**Provider:** {site['provider']}")
 
+        # -------------------------------------------------
+        # Provider link
+        # -------------------------------------------------
         st.link_button(
             "🔗 Open Provider Outage Page",
             site["url"]
         )
 
+        # -------------------------------------------------
+        # Auto-check power status
+        # -------------------------------------------------
         if st.button("🔍 Auto-Check Power Status", use_container_width=True):
             with st.spinner("Checking live outage map..."):
                 result = check_power_status(
