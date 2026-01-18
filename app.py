@@ -1,5 +1,6 @@
 import json
 import streamlit as st
+import streamlit.components.v1 as components
 from selenium_checker import check_power_status
 
 # -------------------------------------------------
@@ -79,9 +80,6 @@ locations_list = [
 if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
 
-if "copy_address" not in st.session_state:
-    st.session_state.copy_address = False
-
 # -------------------------------------------------
 # Sidebar – Highlight selected
 # -------------------------------------------------
@@ -90,9 +88,7 @@ with st.sidebar:
     st.caption("Tap a location to auto-fill")
 
     for loc in locations_list:
-        is_selected = st.session_state.selected_location.lower() == loc.lower()
-
-        if is_selected:
+        if st.session_state.selected_location.lower() == loc.lower():
             st.markdown(
                 f"""
                 <div style="
@@ -153,7 +149,7 @@ if location:
         )
 
         # -------------------------------------------------
-        # Address + Copy (FIXED – no UI disappear)
+        # Address + Copy (FINAL FIX)
         # -------------------------------------------------
         address = site.get("address", "N/A")
 
@@ -164,19 +160,16 @@ if location:
 
         with col2:
             if st.button("📋 Copy", key="copy_address_btn"):
-                st.session_state.copy_address = True
                 st.toast("📍 Address copied!", icon="✅")
 
-        if st.session_state.copy_address:
-            st.markdown(
-                f"""
-                <script>
-                    navigator.clipboard.writeText("{address}");
-                </script>
-                """,
-                unsafe_allow_html=True
-            )
-            st.session_state.copy_address = False
+                components.html(
+                    f"""
+                    <script>
+                        navigator.clipboard.writeText("{address}");
+                    </script>
+                    """,
+                    height=0,
+                )
 
         # -------------------------------------------------
         # Provider
