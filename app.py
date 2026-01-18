@@ -12,71 +12,89 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (Clean Glassmorphism Look)
+# 2. 🎨 CSS Styles (FIXED & SAFE)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
     
+    /* General Settings */
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
     }
 
-    /* Transparent Background for Animation */
+    /* Make Streamlit Transparent so our background shows through */
     .stApp {
         background: transparent !important;
     }
 
-    /* --- BACKGROUND ANIMATION (Keep Flowing Energy) --- */
+    /* --- FIXED BACKGROUND LAYER --- */
+    /* මෙම කොටස මගින් පසුබිම වෙනම Layer එකක් ලෙස සකසයි */
     #bg-animation {
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
-        z-index: -1;
-        background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e1b4b 100%);
+        z-index: -1; /* අනිත් සියල්ලටම වඩා පිටුපසින් */
+        background: linear-gradient(125deg, #020617 0%, #0f172a 40%, #1e1b4b 100%);
         background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
+        animation: gradientMove 15s ease infinite;
+    }
+    
+    /* Add a subtle pattern overlay */
+    #bg-animation::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 30px 30px;
+        pointer-events: none;
     }
 
-    @keyframes gradientBG {
+    @keyframes gradientMove {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
 
-    /* --- SIDEBAR STYLING (Solid Dark) --- */
+    /* --- SIDEBAR STYLING --- */
     section[data-testid="stSidebar"] {
-        background-color: #0b0f19;
+        background-color: rgba(11, 15, 25, 0.85);
         border-right: 1px solid rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
     }
-    
+
     section[data-testid="stSidebar"] h3 {
         color: #f1f5f9;
         font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        padding-left: 5px;
     }
 
-    /* Sidebar Buttons - Solid Box & Centered Text */
+    /* Solid Sidebar Buttons */
     section[data-testid="stSidebar"] button {
-        background-color: #1e293b !important;
-        color: #e2e8f0 !important;
+        background-color: rgba(30, 41, 59, 0.9) !important;
+        color: #cbd5e1 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px !important;
         margin-bottom: 8px !important;
         padding: 12px 0 !important;
         width: 100%;
+        
         text-align: center !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
+        
         font-weight: 500 !important;
         font-size: 0.95rem !important;
         transition: all 0.2s ease-in-out !important;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
 
     section[data-testid="stSidebar"] button p {
@@ -86,49 +104,33 @@ st.markdown(
     }
 
     section[data-testid="stSidebar"] button:hover {
-        background-color: #3b82f6 !important;
+        background-color: rgba(59, 130, 246, 0.3) !important;
         border-color: #3b82f6 !important;
         color: white !important;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        transform: translateY(-2px);
     }
 
-    section[data-testid="stSidebar"] button:focus {
-        background-color: #2563eb !important;
-        border-color: #60a5fa !important;
-        color: white !important;
-    }
-
-    /* --- CLEAN CARD STYLING (Reverted from Electric Border) --- */
+    /* --- MAIN CONTENT CARD --- */
     .result-header {
-        background: rgba(15, 23, 42, 0.75); /* Dark Glass */
+        background: rgba(15, 23, 42, 0.7);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
+        border-radius: 16px;
         padding: 40px;
         text-align: center;
-        backdrop-filter: blur(20px);
+        backdrop-filter: blur(15px);
         margin-bottom: 20px;
         box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-        animation: fadeIn 0.5s ease-out;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
     }
 
     .status-badge {
         display: inline-block;
-        background-color: rgba(34, 197, 94, 0.15);
+        background-color: rgba(34, 197, 94, 0.2);
         color: #4ade80;
-        padding: 6px 16px;
+        padding: 6px 18px;
         border-radius: 99px;
         font-size: 0.85rem;
         font-weight: 600;
-        border: 1px solid rgba(34, 197, 94, 0.3);
+        border: 1px solid rgba(34, 197, 94, 0.4);
         margin-bottom: 15px;
     }
 
@@ -140,31 +142,13 @@ st.markdown(
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-    
-    .customer-row {
-        color: #94a3b8;
-        font-size: 1.1rem;
-        margin-bottom: 20px;
-    }
-
-    /* Address Box */
-    .address-box {
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        padding: 15px;
-        border-radius: 12px;
-        font-family: monospace;
-        color: #cbd5e1;
-        font-size: 0.95rem;
-        margin-top: 20px;
-        margin-bottom: 30px;
-    }
 
     .welcome-box {
-        margin-top: 60px;
-        padding: 50px;
+        margin-top: 50px;
+        padding: 40px;
         background: rgba(15, 23, 42, 0.6);
         border: 1px dashed rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
         border-radius: 16px;
         text-align: center;
         color: #cbd5e1;
@@ -210,10 +194,10 @@ with st.sidebar:
 # -------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Main Title
+# Title
 st.markdown(
     """
-    <div style="text-align:center; margin-bottom: 40px;">
+    <div style="text-align:center; margin-bottom: 30px;">
         <h1 style="margin:0; font-size: 3.5rem; text-shadow: 0 4px 15px rgba(0,0,0,0.8);">
             ⚡ Power Check
         </h1>
@@ -225,49 +209,45 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Display Logic ---
+# Display Logic
 if st.session_state.selected_location:
     location_key = st.session_state.selected_location.lower().strip()
     
     if location_key in SITES:
         site = SITES[location_key]
         
-        # --- ORIGINAL CLEAN CARD DESIGN ---
-        # Electric Border ඉවත් කර පරණ ලස්සන Design එකට මාරු කරන ලදී.
-        
+        # Info Card
         st.markdown(
             f"""
             <div class="result-header">
                 <div class="status-badge">● Active Location</div>
                 <div class="site-name">{site['site']}</div>
-                
-                <div class="customer-row">
+                <div style="color:#cbd5e1; font-size:1.1rem;">
                     👤 Customer: <span style="color:white; font-weight:600;">{site.get('customer', 'N/A')}</span>
                 </div>
-                
-                <div class="address-box">
-                    📍 {site.get('address', 'N/A')}
-                </div>
-
-                <div style="margin-top:20px;"></div>
             </div>
             """,
             unsafe_allow_html=True
         )
-        
-        # Provider Button
+
+        # Address
+        st.caption("📍 SITE ADDRESS")
+        st.code(site.get("address", "Address unavailable"), language="text")
+
+        # Link Button
+        st.write("") 
         provider_name = site['provider']
+        
         st.link_button(
             label=f"Check {provider_name} Status ➜",
             url=site['url'],
             use_container_width=True,
             type="primary" 
         )
-        
     else:
         st.error("Error: Location data not found.")
 else:
-    # Welcome Message
+    # Welcome Box
     st.markdown(
         """
         <div class="welcome-box">
