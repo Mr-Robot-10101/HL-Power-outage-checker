@@ -13,117 +13,129 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 🎨 CLEAN & READABLE DARK THEME
+# 🎨 SAAS DASHBOARD THEME (LIGHT)
 # -------------------------------------------------
-st.markdown(
-    """
-    <style>
-    /* Background */
-    .stApp {
-        background: linear-gradient(180deg, #020617, #020617);
-        color: #e5e7eb;
-    }
+st.markdown("""
+<style>
+/* App background */
+.stApp {
+    background-color: #f5f7fb;
+    color: #111827;
+}
 
-    /* Sidebar */
-    section[data-testid="stSidebar"] {
-        background: #020617;
-        border-right: 1px solid #1f2937;
-    }
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+}
 
-    section[data-testid="stSidebar"] button {
-        background: #020617;
-        color: #e5e7eb;
-        border: 1px solid #1f2937;
-        border-radius: 10px;
-        padding: 10px;
-    }
+section[data-testid="stSidebar"] h2 {
+    color: #111827;
+}
 
-    section[data-testid="stSidebar"] button:hover {
-        background: #2563eb;
-        border-color: #2563eb;
-        color: white;
-    }
+section[data-testid="stSidebar"] button {
+    background-color: #ffffff;
+    color: #111827;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    text-align: left;
+}
 
-    /* Header */
-    .title {
-        font-size: 36px;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 6px;
-    }
+section[data-testid="stSidebar"] button:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+}
 
-    .subtitle {
-        text-align: center;
-        color: #9ca3af;
-        font-size: 14px;
-        margin-bottom: 20px;
-    }
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
 
-    /* Input */
-    input {
-        background: #020617 !important;
-        border: 1px solid #1f2937 !important;
-        border-radius: 10px !important;
-        color: #ffffff !important;
-        padding: 12px !important;
-    }
+.header-title {
+    font-size: 28px;
+    font-weight: 700;
+}
 
-    /* Card */
-    .card {
-        background: #020617;
-        border: 1px solid #1f2937;
-        border-radius: 14px;
-        padding: 20px;
-        max-width: 900px;
-        margin: 20px auto;
-    }
+.header-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+}
 
-    /* Address row */
-    .address-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-top: 12px;
-        color: #ffffff;
-        font-size: 15px;
-        flex-wrap: wrap;
-    }
+/* Input */
+input {
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 10px !important;
+    padding: 10px !important;
+}
 
-    .copy-btn {
-        padding: 5px 12px;
-        border-radius: 8px;
-        border: none;
-        background: #2563eb;
-        color: white;
-        font-size: 13px;
-        cursor: pointer;
-    }
+/* Card */
+.card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    max-width: 900px;
+}
 
-    .copy-btn:hover {
-        background: #1d4ed8;
-    }
+/* Labels */
+.label {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
 
-    /* Provider button */
-    .provider-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 18px;
-        border-radius: 10px;
-        font-weight: 600;
-        text-decoration: none;
-        color: white !important;
-        margin-top: 16px;
-    }
+.value {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
+}
 
-    .powercor { background: #2563eb; }
-    .jemena { background: #16a34a; }
-    .ausnet { background: #7c3aed; }
-    .default { background: #374151; }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+/* Address row */
+.address-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.copy-btn {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #2563eb;
+    background-color: #2563eb;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Provider button */
+.provider-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background-color: #2563eb;
+    color: white !important;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.provider-btn:hover {
+    background-color: #1d4ed8;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # -------------------------------------------------
 # Load data
@@ -134,7 +146,7 @@ with open("sites.json", "r", encoding="utf-8") as f:
 locations = list(SITES.keys())
 
 # -------------------------------------------------
-# Session
+# Session state
 # -------------------------------------------------
 if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
@@ -152,41 +164,44 @@ with st.sidebar:
 # -------------------------------------------------
 # Header
 # -------------------------------------------------
-st.markdown(
-    """
-    <div class="title">⚡ Power Outage Checker</div>
-    <div class="subtitle">
-        Quickly access provider outage pages for each site
+st.markdown("""
+<div class="header">
+    <div>
+        <div class="header-title">⚡ Power Outage Checker</div>
+        <div class="header-subtitle">
+            Quickly access provider outage pages for each site
+        </div>
     </div>
-    """,
-    unsafe_allow_html=True
-)
+</div>
+""", unsafe_allow_html=True)
 
 # -------------------------------------------------
 # Input
 # -------------------------------------------------
 location = st.text_input(
-    "📍 Enter Location / Suburb",
-    value=st.session_state.selected_location
+    "Enter Location / Suburb",
+    value=st.session_state.selected_location,
+    placeholder="Search by suburb name"
 )
 
 # -------------------------------------------------
-# Main
+# Main content
 # -------------------------------------------------
 if location and location.lower() in SITES:
     site = SITES[location.lower()]
     address = site.get("address", "N/A")
-    provider = site.get("provider", "").lower()
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
 
     st.markdown(f"### 📍 {site['site']}")
-    st.markdown(f"**Customer:** {site.get('customer','N/A')}")
+    st.markdown(f"<div class='label'>Customer</div><div class='value'>{site.get('customer','N/A')}</div>", unsafe_allow_html=True)
 
-    components.html(
-        f"""
+    components.html(f"""
         <div class="address-row">
-            <b>Address:</b> {address}
+            <div>
+                <div class="label">Address</div>
+                <div class="value">{address}</div>
+            </div>
             <button class="copy-btn"
                 onclick="
                     navigator.clipboard.writeText('{address}');
@@ -196,33 +211,19 @@ if location and location.lower() in SITES:
                 Copy
             </button>
         </div>
-        """,
-        height=45
-    )
+    """, height=60)
 
-    st.markdown(f"**Provider:** {site['provider']}")
+    st.markdown(f"<div class='label'>Provider</div><div class='value'>{site['provider']}</div>", unsafe_allow_html=True)
 
-    if "powercor" in provider:
-        cls = "powercor"
-    elif "jemena" in provider:
-        cls = "jemena"
-    elif "ausnet" in provider:
-        cls = "ausnet"
-    else:
-        cls = "default"
-
-    st.markdown(
-        f"""
-        <a class="provider-btn {cls}" href="{site['url']}" target="_blank">
+    st.markdown(f"""
+        <a class="provider-btn" href="{site['url']}" target="_blank">
             🔗 Open Provider Outage Page
         </a>
-        """,
-        unsafe_allow_html=True
-    )
+    """, unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
 elif location:
-    st.error("❌ Location not found")
+    st.error("Location not found")
 else:
-    st.info("👈 Select a location from the sidebar")
+    st.info("Select a location from the sidebar")
