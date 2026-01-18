@@ -2,7 +2,7 @@ import json
 import streamlit as st
 
 # -------------------------------------------------
-# 1. Page Config
+# 1. Page Config (පිටුවේ මූලික සැකසුම්)
 # -------------------------------------------------
 st.set_page_config(
     page_title="Power Check",
@@ -12,12 +12,12 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (Solid Sidebar Buttons & Clean UI)
+# 2. 🎨 CSS Styles (සම්පූර්ණ Design එක)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
-    /* Google Font */
+    /* Google Font Import */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap');
     
     html, body, [class*="css"] {
@@ -37,6 +37,7 @@ st.markdown(
         border-right: 1px solid rgba(255,255,255,0.05);
     }
 
+    /* Sidebar Header */
     section[data-testid="stSidebar"] h3 {
         color: #f1f5f9;
         font-size: 1.1rem;
@@ -45,13 +46,13 @@ st.markdown(
 
     /* Sidebar Buttons - Solid Box & Centered Text */
     section[data-testid="stSidebar"] button {
-        background-color: rgba(30, 41, 59, 0.8) !important; /* Solid Dark Background */
+        background-color: rgba(30, 41, 59, 0.8) !important; /* තද පසුබිම් වර්ණය */
         color: #cbd5e1 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 6px !important;
         
-        /* Force Centering */
+        /* Force Centering (අකුරු මැදට) */
         text-align: center !important;
         display: flex !important;
         justify-content: center !important;
@@ -87,19 +88,6 @@ st.markdown(
 
     /* --- MAIN CONTENT STYLING --- */
     
-    .stTextInput input {
-        background-color: rgba(255,255,255,0.08) !important;
-        color: white !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        border-radius: 12px !important;
-        padding: 14px 15px !important;
-        font-size: 1rem !important;
-    }
-    .stTextInput input:focus {
-        border-color: #3b82f6 !important;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3) !important;
-    }
-
     /* Result Card */
     .result-header {
         background: rgba(255, 255, 255, 0.05);
@@ -110,6 +98,12 @@ st.markdown(
         backdrop-filter: blur(10px);
         margin-bottom: 20px;
         box-shadow: 0 4px 25px rgba(0,0,0,0.4);
+        animation: fadeIn 0.4s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .status-badge {
@@ -133,6 +127,16 @@ st.markdown(
         -webkit-text-fill-color: transparent;
     }
 
+    /* Welcome Box (කිසිවක් තෝරා නැති විට) */
+    .welcome-box {
+        margin-top: 40px;
+        padding: 40px;
+        border: 1px dashed rgba(255,255,255,0.1);
+        border-radius: 16px;
+        text-align: center;
+        color: #64748b;
+    }
+
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     </style>
@@ -153,32 +157,33 @@ except FileNotFoundError:
 locations_list = list(SITES.keys())
 
 # -------------------------------------------------
-# 4. Session State
+# 4. Session State Management
 # -------------------------------------------------
 if "selected_location" not in st.session_state:
-    st.session_state.selected_location = ""
+    st.session_state.selected_location = None
 
 # -------------------------------------------------
-# 5. Sidebar (Using Old Code Logic + New Styles)
+# 5. Sidebar Logic
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("### 🗺️ Locations")
     st.caption("Quick Select")
     
-    # මෙන්න ඔයාගේ Old Code එකේ Logic එක
+    # Buttons create the selection
     for loc in locations_list:
         if st.button(loc.title(), use_container_width=True, key=f"loc_{loc}"):
             st.session_state.selected_location = loc
             st.rerun()
 
 # -------------------------------------------------
-# 6. Main Content
+# 6. Main Content Area
 # -------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
 
+# Title
 st.markdown(
     """
-    <div style="text-align:center; margin-bottom: 40px;">
+    <div style="text-align:center; margin-bottom: 30px;">
         <h1 style="margin:0; font-size: 3.2rem;">⚡ Power Check</h1>
         <p style="color: #64748b; font-size: 1.1rem; margin-top:8px;">
             Real-time outage status by location
@@ -188,25 +193,15 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Search Input (Full Width - No Columns)
-search_query = st.text_input(
-    "Search Location", 
-    value=st.session_state.selected_location, 
-    placeholder="Select from sidebar or type...", 
-    label_visibility="collapsed"
-)
+# --- DISPLAY LOGIC (Without Search Bar) ---
 
-# -------------------------------------------------
-# 7. Results Display
-# -------------------------------------------------
-if search_query:
-    location_key = search_query.lower().strip()
+if st.session_state.selected_location:
+    # If a location is selected from Sidebar
+    location_key = st.session_state.selected_location.lower().strip()
     
     if location_key in SITES:
         site = SITES[location_key]
         
-        st.write("") 
-
         # --- Info Card ---
         st.markdown(
             f"""
@@ -221,7 +216,7 @@ if search_query:
             unsafe_allow_html=True
         )
 
-        # --- Address (Native Copy Button) ---
+        # --- Address (Native Code Block for Copying) ---
         st.caption("📍 SITE ADDRESS")
         st.code(site.get("address", "Address unavailable"), language="text")
 
@@ -237,20 +232,16 @@ if search_query:
         )
     
     else:
-        st.markdown(
-            """
-            <div style="
-                margin-top: 30px;
-                padding: 20px;
-                background: rgba(239, 68, 68, 0.1);
-                border: 1px solid rgba(239, 68, 68, 0.2);
-                border-radius: 12px;
-                color: #fca5a5;
-                text-align: center;
-                font-weight: 500;
-            ">
-                ❌ Location not found. Please try again.
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        st.error("Error: Location data not found.")
+
+else:
+    # If nothing is selected yet
+    st.markdown(
+        """
+        <div class="welcome-box">
+            <h3>👈 Select a location</h3>
+            <p>Click on any location in the sidebar to view details.</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
