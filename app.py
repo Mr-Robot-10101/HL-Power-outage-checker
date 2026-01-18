@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (Rain Only - No Lightning)
+# 2. 🎨 CSS Styles (Smoother Rain Animation)
 # -------------------------------------------------
 st.markdown(
     """
@@ -23,7 +23,7 @@ st.markdown(
         font-family: 'Inter', sans-serif;
     }
 
-    /* Make Streamlit Transparent */
+    /* Transparent Background */
     .stApp {
         background: transparent !important;
     }
@@ -36,29 +36,44 @@ st.markdown(
         width: 100vw;
         height: 100vh;
         z-index: -1;
-        /* Dark Stormy Blue Gradient (No Flashing) */
         background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%);
         overflow: hidden;
     }
 
-    /* Rain Animation Class */
-    .rain {
+    /* --- SMOOTH RAIN LAYERS --- */
+    /* මෙමගින් වැසි ස්ථර දෙකක් (Layers) සාදයි */
+    
+    .rain-layer {
         position: absolute;
-        left: 0;
-        top: 0;
         width: 100%;
         height: 100%;
-        z-index: 0;
-        /* Rain Drop Gradient */
-        background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
-        background-size: 2px 80px; /* Width and Length of drops */
-        animation: rain-fall 0.4s linear infinite; /* Fast falling speed */
-        opacity: 0.3; /* Visibility of rain */
+        top: 0;
+        left: 0;
+        background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 100%);
+        background-repeat: repeat;
     }
 
-    @keyframes rain-fall {
-        0% { background-position: 0 0; }
-        100% { background-position: 0 100vh; }
+    /* Layer 1: ළඟින් වැටෙන ලොකු බිංදු (වේගවත්) */
+    .layer-1 {
+        background-size: 2px 50px; /* බිංදුවේ ප්‍රමාණය */
+        opacity: 0.3;
+        animation: rainfall 0.7s linear infinite; /* Flicker නොවීමට වේගය සකස් කළා */
+    }
+
+    /* Layer 2: ඈතින් වැටෙන පොඩි බිංදු (සෙමින්) - 3D පෙනුමක් සඳහා */
+    .layer-2 {
+        background-size: 1px 30px;
+        opacity: 0.15;
+        animation: rainfall 1.5s linear infinite; /* ටිකක් හිමින් */
+    }
+
+    @keyframes rainfall {
+        0% {
+            background-position: 0 -100px;
+        }
+        100% {
+            background-position: 0 100vh;
+        }
     }
 
     /* --- SIDEBAR STYLING --- */
@@ -67,7 +82,7 @@ st.markdown(
         border-right: 1px solid rgba(255,255,255,0.05);
         backdrop-filter: blur(10px);
     }
-
+    
     section[data-testid="stSidebar"] h3 {
         color: #f1f5f9;
         font-size: 1.1rem;
@@ -75,7 +90,6 @@ st.markdown(
         padding-left: 5px;
     }
 
-    /* Solid Sidebar Buttons */
     section[data-testid="stSidebar"] button {
         background-color: rgba(30, 41, 59, 0.9) !important;
         color: #cbd5e1 !important;
@@ -84,14 +98,11 @@ st.markdown(
         margin-bottom: 8px !important;
         padding: 12px 0 !important;
         width: 100%;
-        
         text-align: center !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-        
         font-weight: 500 !important;
-        font-size: 0.95rem !important;
         transition: all 0.2s ease-in-out !important;
     }
 
@@ -108,7 +119,7 @@ st.markdown(
         transform: translateY(-2px);
     }
 
-    /* --- MAIN CONTENT CARD --- */
+    /* --- MAIN CARD --- */
     .result-header {
         background: rgba(15, 23, 42, 0.7);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -139,7 +150,6 @@ st.markdown(
         background: linear-gradient(to bottom, #fff, #cbd5e1);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 15px rgba(255,255,255,0.1);
     }
 
     .welcome-box {
@@ -158,7 +168,8 @@ st.markdown(
     </style>
     
     <div id="bg-animation">
-        <div class="rain"></div>
+        <div class="rain-layer layer-1"></div>
+        <div class="rain-layer layer-2"></div>
     </div>
     """,
     unsafe_allow_html=True
