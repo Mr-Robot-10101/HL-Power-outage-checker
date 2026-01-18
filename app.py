@@ -1,6 +1,5 @@
 import json
 import streamlit as st
-import streamlit.components.v1 as components
 from selenium_checker import check_power_status
 
 # -------------------------------------------------
@@ -14,35 +13,41 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 🎨 Brand Theme (CSS)
+# 🎨 Custom Brand Theme (CSS)
 # -------------------------------------------------
 st.markdown(
     """
     <style>
+    /* App background */
     .stApp {
         background-color: #0f172a;
         color: #e5e7eb;
     }
 
+    /* Sidebar */
     section[data-testid="stSidebar"] {
         background-color: #020617;
     }
 
+    /* Sidebar buttons */
     section[data-testid="stSidebar"] button {
-        background-color: #2563eb;
-        color: white;
-        border: none;
+        background-color: #020617;
+        color: #e5e7eb;
+        border: 1px solid #1f2937;
         border-radius: 10px;
         padding: 10px;
         font-weight: 500;
     }
 
     section[data-testid="stSidebar"] button:hover {
-        background-color: #1d4ed8;
+        background-color: #1f6feb;
+        color: white;
+        border-color: #1f6feb;
     }
 
+    /* Main buttons */
     .stButton > button {
-        background: linear-gradient(90deg, #2563eb, #1d4ed8);
+        background: linear-gradient(90deg, #1f6feb, #2563eb);
         color: white;
         border-radius: 12px;
         border: none;
@@ -50,9 +55,15 @@ st.markdown(
         font-weight: 600;
     }
 
+    .stButton > button:hover {
+        background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    }
+
+    /* Success / warning / error boxes */
     .stAlert {
         border-radius: 14px;
     }
+
     </style>
     """,
     unsafe_allow_html=True
@@ -68,10 +79,26 @@ with open("sites.json", "r", encoding="utf-8") as f:
 # Locations list
 # -------------------------------------------------
 locations_list = [
-    "Claremont", "Shepparton", "Knoxfield", "Glen Iris", "Brisbane",
-    "Broadmeadows", "Kilsyth", "Hastings", "Mornington", "Balwyn",
-    "Greensborough", "Elsternwick", "Glen Waverley", "St Kilda Road",
-    "RRC", "Clunes", "Chum Creek", "Mallana", "Lochend", "Indooroopilly"
+    "Claremont",
+    "Shepparton",
+    "Knoxfield",
+    "Glen Iris",
+    "Brisbane",
+    "Broadmeadows",
+    "Kilsyth",
+    "Hastings",
+    "Mornington",
+    "Balwyn",
+    "Greensborough",
+    "Elsternwick",
+    "Glen Waverley",
+    "St Kilda Road",
+    "RRC",
+    "Clunes",
+    "Chum Creek",
+    "Mallana",
+    "Lochend",
+    "Indooroopilly"
 ]
 
 # -------------------------------------------------
@@ -81,24 +108,27 @@ if "selected_location" not in st.session_state:
     st.session_state.selected_location = ""
 
 # -------------------------------------------------
-# Sidebar – Highlight selected
+# Sidebar – Highlighted selection (brand color)
 # -------------------------------------------------
 with st.sidebar:
     st.markdown("## ⚡ Locations")
     st.caption("Tap a location to auto-fill")
 
     for loc in locations_list:
-        if st.session_state.selected_location.lower() == loc.lower():
+        is_selected = st.session_state.selected_location.lower() == loc.lower()
+
+        if is_selected:
             st.markdown(
                 f"""
                 <div style="
                     padding:12px;
                     margin-bottom:8px;
                     border-radius:12px;
-                    background:linear-gradient(90deg,#2563eb,#1d4ed8);
+                    background:linear-gradient(90deg,#1f6feb,#2563eb);
                     color:white;
                     font-weight:700;
                     text-align:center;
+                    box-shadow:0 0 10px rgba(31,111,235,0.6);
                 ">
                     ⚡ {loc}
                 </div>
@@ -148,32 +178,7 @@ if location:
             f"👤 **Customer:** {site.get('customer', 'N/A')}"
         )
 
-        # -------------------------------------------------
-        # Address + Copy (FINAL FIX)
-        # -------------------------------------------------
-        address = site.get("address", "N/A")
-
-        col1, col2 = st.columns([6, 1])
-
-        with col1:
-            st.write(f"**Address:** {address}")
-
-        with col2:
-            if st.button("📋 Copy", key="copy_address_btn"):
-                st.toast("📍 Address copied!", icon="✅")
-
-                components.html(
-                    f"""
-                    <script>
-                        navigator.clipboard.writeText("{address}");
-                    </script>
-                    """,
-                    height=0,
-                )
-
-        # -------------------------------------------------
-        # Provider
-        # -------------------------------------------------
+        st.write(f"**Address:** {site.get('address', 'N/A')}")
         st.write(f"**Provider:** {site['provider']}")
 
         st.link_button(
@@ -181,9 +186,6 @@ if location:
             site["url"]
         )
 
-        # -------------------------------------------------
-        # Auto-check power status
-        # -------------------------------------------------
         if st.button("🔍 Auto-Check Power Status", use_container_width=True):
             with st.spinner("Checking live outage map..."):
                 result = check_power_status(
