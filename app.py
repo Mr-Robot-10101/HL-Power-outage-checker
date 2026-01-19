@@ -242,7 +242,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.markdown(
     """
     <div style="text-align:center; margin-bottom: 30px;">
-        <h1 style="margin:0; font-size: 3.5rem; text-shadow: 0 4px 15px rgba(0,0,0,0.8);">
+        <h1 style="margin:0; font-size: 2.5rem; text-shadow: 0 4px 15px rgba(0,0,0,0.8);">
             ⚡ Honey Light Power Checker
         </h1>
         <p style="color: #cbd5e1; font-size: 1.1rem; margin-top:8px; text-shadow: 0 2px 5px rgba(0,0,0,0.8);">
