@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# 2. 🎨 CSS Styles (MORE REALISTIC WISPY CLOUDS)
+# 2. 🎨 CSS Styles & NEW ANIMATION
 # -------------------------------------------------
 st.markdown(
     """
@@ -28,7 +28,7 @@ st.markdown(
         background: transparent !important;
     }
 
-    /* --- SKY BACKGROUND CONTAINER --- */
+    /* --- NEW BACKGROUND ANIMATION (Floating Orbs) --- */
     #bg-animation {
         position: fixed;
         top: 0;
@@ -36,83 +36,75 @@ st.markdown(
         width: 100vw;
         height: 100vh;
         z-index: -1;
-        /* Deep Night Sky Gradient */
-        background: linear-gradient(to bottom, #020617 0%, #0f172a 50%, #1e293b 100%);
+        background-color: #0b0f19; /* Deep Dark Background */
         overflow: hidden;
     }
 
-    /* --- REALISTIC WISPY CLOUD CSS --- */
-    
-    /* Cloud Base Style - Using Gradients for Realism */
-    .cloud {
+    /* Glowing Orbs */
+    .orb {
         position: absolute;
-        /* වෙනස්කම 1: Solid color වෙනුවට Radial Gradient භාවිතය.
-           මැද සුදු පැහැය වැඩි අතර, දාර වලට යද්දී විනිවිද පෙනේ. */
-        background: radial-gradient(closest-side at 50% 50%, rgba(255, 255, 255, 0.12), transparent);
-        /* හැඩය වඩාත් ස්වභාවික කිරීමට border-radius වෙනස් කිරීම */
-        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-        /* තාත්වික බව සඳහා සුදුසු Blur ප්‍රමාණයක් */
-        filter: blur(20px);
-        opacity: 0.9;
-        z-index: 0;
-        transform-origin: center;
-    }
-
-    /* Cloud Layer 1 (Top, Slow, Very Wispy) */
-    .c1 {
-        width: 800px; height: 250px;
-        top: -5%;
-        left: -800px;
-        animation: drift 60s linear infinite;
-        opacity: 0.7;
-        filter: blur(30px); /* ඈතින් ඇති නිසා වැඩිපුර Blur */
-    }
-
-    /* Cloud Layer 2 (Middle, Main Body, Brighter) */
-    .c2 {
-        width: 900px; height: 300px;
-        top: 30%;
-        left: -900px;
-        animation: drift 45s linear infinite;
-        animation-delay: -15s;
-        /* මැද කොටස මදක් දීප්තිමත් */
-        background: radial-gradient(closest-side at 50% 50%, rgba(255, 255, 255, 0.18), transparent);
-        filter: blur(25px);
-    }
-
-    /* Cloud Layer 3 (Bottom, Fast, Thinner Mist) */
-    .c3 {
-        width: 600px; height: 180px;
-        top: 65%;
-        left: -600px;
-        animation: drift 35s linear infinite;
-        animation-delay: -5s;
+        border-radius: 50%;
+        filter: blur(80px); /* This creates the glow effect */
         opacity: 0.6;
-        filter: blur(15px);
-         /* වඩාත් දිගටි හැඩයක් */
-        transform: scaleY(0.7);
-    }
-    
-    /* Cloud Layer 4 (Filler fog) */
-    .c4 {
-        width: 500px; height: 200px;
-        top: 20%;
-        left: -500px;
-        animation: drift 55s linear infinite;
-        animation-delay: -30s;
-        opacity: 0.5;
-        filter: blur(35px);
+        animation: float ease-in-out infinite;
     }
 
-    @keyframes drift {
-        0% { transform: translateX(0) scale(1); }
-        50% { transform: translateX(70vw) scale(1.05); } /* මදක් විශාල වීම */
-        100% { transform: translateX(140vw) scale(1); }
+    /* Orb 1 (Purple/Blue) */
+    .orb-1 {
+        width: 500px;
+        height: 500px;
+        background: linear-gradient(180deg, #4c1d95 0%, #2563eb 100%);
+        top: -100px;
+        left: -100px;
+        animation-duration: 10s;
+    }
+
+    /* Orb 2 (Cyan/Green) */
+    .orb-2 {
+        width: 400px;
+        height: 400px;
+        background: linear-gradient(180deg, #0ea5e9 0%, #22c55e 100%);
+        bottom: -50px;
+        right: -50px;
+        animation-duration: 12s;
+        animation-delay: -2s;
+    }
+
+    /* Orb 3 (Accent Blue) */
+    .orb-3 {
+        width: 300px;
+        height: 300px;
+        background: #3b82f6;
+        top: 40%;
+        left: 40%;
+        opacity: 0.4;
+        animation-duration: 15s;
+        animation-delay: -5s;
+    }
+
+    /* Movement Animation */
+    @keyframes float {
+        0% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0, 0) scale(1); }
+    }
+
+    /* Grid Overlay (Tech Feel) */
+    #bg-animation::after {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
     }
 
     /* --- SIDEBAR STYLING --- */
     section[data-testid="stSidebar"] {
-        background-color: rgba(11, 15, 25, 0.9);
+        background-color: rgba(11, 15, 25, 0.85);
         border-right: 1px solid rgba(255,255,255,0.05);
         backdrop-filter: blur(10px);
     }
@@ -124,6 +116,7 @@ st.markdown(
         padding-left: 5px;
     }
 
+    /* Solid Sidebar Buttons */
     section[data-testid="stSidebar"] button {
         background-color: rgba(30, 41, 59, 0.9) !important;
         color: #cbd5e1 !important;
@@ -132,10 +125,12 @@ st.markdown(
         margin-bottom: 8px !important;
         padding: 12px 0 !important;
         width: 100%;
+        
         text-align: center !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
+        
         font-weight: 500 !important;
         font-size: 0.95rem !important;
         transition: all 0.2s ease-in-out !important;
@@ -156,12 +151,12 @@ st.markdown(
 
     /* --- MAIN CONTENT CARD --- */
     .result-header {
-        background: rgba(15, 23, 42, 0.7);
+        background: rgba(15, 23, 42, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
+        border-radius: 20px;
         padding: 40px;
         text-align: center;
-        backdrop-filter: blur(15px);
+        backdrop-filter: blur(20px);
         margin-bottom: 20px;
         box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     }
@@ -185,6 +180,7 @@ st.markdown(
         background: linear-gradient(to bottom, #fff, #cbd5e1);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
 
     .welcome-box {
@@ -203,10 +199,9 @@ st.markdown(
     </style>
     
     <div id="bg-animation">
-        <div class="cloud c1"></div>
-        <div class="cloud c2"></div>
-        <div class="cloud c3"></div>
-        <div class="cloud c4"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
     </div>
     """,
     unsafe_allow_html=True
